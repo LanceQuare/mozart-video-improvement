@@ -1,0 +1,3147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>video-feature-documentation.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="video-feature-documentation---sccs-backend">Video Feature Documentation - SCCS Backend</h1>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#overview">Overview</a>
+<ul>
+<li><a href="#1-live-view">1. Live View</a></li>
+<li><a href="#2-short-playback">2. Short Playback</a></li>
+<li><a href="#3-external-playback">3. External Playback</a></li>
+</ul>
+</li>
+<li><a href="#system-integration">System Integration</a></li>
+<li><a href="#system-architecture">System Architecture</a></li>
+<li><a href="#feature-1-live-view">Feature 1: Live View</a></li>
+<li><a href="#feature-2-short-playback-automatic-case-footage">Feature 2: Short Playback (Automatic Case Footage)</a>
+<ul>
+<li><a href="#short-playback-step-by-step-processing-flow">Short Playback: Step-by-Step Processing Flow</a></li>
+<li><a href="#complete-flow-diagram">Complete Flow Diagram</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#key-technical-details">Key Technical Details</a></li>
+</ul>
+</li>
+<li><a href="#feature-3-external-playback-user-initiated-historical-playback">Feature 3: External Playback (User-Initiated Historical Playback)</a>
+<ul>
+<li><a href="#external-playback-step-by-step-processing-flow">External Playback: Step-by-Step Processing Flow</a></li>
+<li><a href="#external-playback-use-cases">External Playback: Use Cases</a></li>
+<li><a href="#external-playback-flow-diagrams">External Playback: Flow Diagrams</a></li>
+<li><a href="#external-playback--live-view-key-technical-details">External Playback &amp; Live View: Key Technical Details</a></li>
+</ul>
+</li>
+<li><a href="#feature-comparison-summary">Feature Comparison Summary</a></li>
+</ol>
+<hr>
+<h2 id="overview">Overview</h2>
+<p>The SCCS (Security Command and Control System) backend provides three distinct video features for comprehensive security monitoring:</p>
+<h3 id="1-live-view">1. Live View</h3>
+<p><strong>Purpose</strong>: Real-time monitoring of camera feeds</p>
+<ul>
+<li>Live streaming from cameras for active surveillance</li>
+<li>PTZ (Pan-Tilt-Zoom) camera controls for some cameras</li>
+<li>Multiple simultaneous camera views</li>
+<li>Used by security operators for real-time situation awareness</li>
+</ul>
+<h3 id="2-short-playback">2. Short Playback</h3>
+<p><strong>Purpose</strong>: Automatic incident documentation</p>
+<ul>
+<li><strong>10-second video clips</strong> (5 seconds before + 5 after event) automatically generated when cases/alarms are created</li>
+<li>Provides immediate visual context for incidents without manual retrieval</li>
+<li>Captures from multiple cameras (equipment camera + closest cameras)</li>
+<li>Displayed in case detail page as &quot;Playbacks&quot; and &quot;Snapshots&quot;</li>
+<li><strong>Format</strong>: Pre-recorded MP4 files and JPEG snapshots stored on server</li>
+</ul>
+<h3 id="3-external-playback">3. External Playback</h3>
+<p><strong>Purpose</strong>: User-initiated historical footage review</p>
+<ul>
+<li>On-demand video playback with timeline controls</li>
+<li>Date selection and time range navigation (24-hour timeline)</li>
+<li>Playback speed control (1x to 4x)</li>
+<li>Used for detailed incident investigation and evidence gathering</li>
+<li><strong>Format</strong>: Real-time streaming via WebSocket (not pre-recorded files)</li>
+</ul>
+<hr>
+<h2 id="system-integration">System Integration</h2>
+<p>The system integrates with multiple Video Management Systems (VMS):</p>
+<ul>
+<li><strong>Milestone Mobile Service</strong> - Returns video as image frames</li>
+<li><strong>Dahua DSS Pro</strong> - Returns RTSP URLs that are converted to image frames</li>
+<li><strong>HikCentral, Hikvision, SenseTime, Qognify</strong> - Various VMS integrations</li>
+</ul>
+<p><strong>Technology Stack</strong>:</p>
+<ul>
+<li><strong>WebSocket connections</strong>: Used for Live View and External Playback (real-time streaming)</li>
+<li><strong>File-based delivery</strong>: Used for Short Playback (pre-generated MP4/JPEG files)</li>
+<li><strong>FFmpeg</strong>: Video processing for format conversion and frame extraction</li>
+</ul>
+<hr>
+<h2 id="system-architecture">System Architecture</h2>
+<h3 id="components">Components</h3>
+<ul>
+<li><strong>Frontend (React 17)</strong>: Web application displaying video streams and case details</li>
+<li><strong>LegacyAPI Service</strong>: API gateway (communication layer between frontend and video services) - <em>Currently not actively used for video, frontend directly connects to video services</em></li>
+<li><strong>MqProcSvc (Message Queue Processing Service)</strong>: Background service that listens for case creation events and triggers footage generation</li>
+<li><strong>VideoApi</strong>: Main video API service for footage/snapshot generation and retrieval</li>
+<li><strong>MedianVideoApi</strong>: Video recording service that handles actual video downloads from VMS</li>
+<li><strong>MilestoneMediaServices</strong>: Microservice handling Milestone video playback</li>
+<li><strong>DahuaMediaServices</strong>: Microservice handling Dahua video playback and live view</li>
+<li><strong>Video Sources</strong>:
+<ul>
+<li>Milestone Mobile Server (image frames)</li>
+<li>Dahua DSS Pro (RTSP streams)</li>
+<li>HikCentral, Hikvision, SenseTime, Qognify (various VMS)</li>
+</ul>
+</li>
+</ul>
+<h3 id="communication-flow-external-playback--live-view">Communication Flow (External Playback &amp; Live View)</h3>
+<pre><code class="language-mermaid"><div class="mermaid">graph LR
+    A[React Frontend] -->|HTTP API| B[Video API Endpoint Discovery]
+    A -->|WebSocket| C[MilestoneMediaServices]
+    A -->|WebSocket| D[DahuaMediaServices]
+    C -->|Mobile SDK| E[Milestone Server]
+    D -->|HTTP API| F[Dahua DSS Pro]
+    F -->|RTSP| D
+    D -->|FFmpeg| D
+    E -->|Image Frames| C
+    C -->|WebSocket Image Frames| A
+    D -->|WebSocket Image Frames| A
+</div></code></pre>
+<hr>
+<h2 id="feature-1-live-view">Feature 1: Live View</h2>
+<h3 id="overview">Overview</h3>
+<p>Live View provides real-time video streaming from security cameras for active monitoring. Security operators can view multiple cameras simultaneously, and for PTZ (Pan-Tilt-Zoom) cameras, they can control camera movements and zoom levels.</p>
+<p><strong>Key Characteristics</strong>:</p>
+<ul>
+<li>Real-time streaming via WebSocket</li>
+<li>Minimal latency for immediate situational awareness</li>
+<li>PTZ controls available for compatible cameras</li>
+<li>Multiple concurrent camera views supported</li>
+<li>Continuous streaming until user closes the view</li>
+</ul>
+<p><strong>Technology</strong>:</p>
+<ul>
+<li>Uses the same WebSocket streaming infrastructure as External Playback</li>
+<li>Camera component handles both live view and playback display</li>
+<li>Integrates with VMS live streaming endpoints</li>
+</ul>
+<p><strong>Frontend Components</strong>:</p>
+<ul>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/pages/video/liveview.js</code>]</li>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/camera.js</code>]</li>
+</ul>
+<p><strong>Display Locations</strong>:</p>
+<ul>
+<li>Dedicated Live View page for security monitoring</li>
+<li>Case detail page &quot;Nearest Camera View (Live)&quot; section</li>
+<li>Dashboard widgets for at-a-glance monitoring</li>
+</ul>
+<hr>
+<h3 id="ptz-pan-tilt-zoom-camera-controls">PTZ (Pan-Tilt-Zoom) Camera Controls</h3>
+<p>For cameras with PTZ capabilities, operators can control camera movements and zoom in real-time during live viewing. The system supports directional movements (pan/tilt), zoom, and preset home position.</p>
+<h4 id="ptz-control-panel-ui">PTZ Control Panel UI</h4>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/camera.js</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong> (Frontend - PTZ Control Panel):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From camera.js - PTZ Control Handler</span>
+<span class="hljs-keyword">const</span> handlePTZControl = <span class="hljs-keyword">async</span> (direction) =&gt; {
+    <span class="hljs-keyword">let</span> disco = <span class="hljs-keyword">await</span> Discovery.get();
+    <span class="hljs-keyword">let</span> url = <span class="hljs-string">`<span class="hljs-subst">${disco[<span class="hljs-string">'mozart-video-api_endpoint'</span>]}</span>/moveptzcamera/<span class="hljs-subst">${direction}</span>`</span>;
+
+    mozartApi.post(url, cameraConfig)
+        .then(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`Moving camera <span class="hljs-subst">${direction}</span>`</span>);
+        })
+        .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> {
+            toast.error(<span class="hljs-string">"Error moving PTZ camera"</span>, { <span class="hljs-attr">autoClose</span>: <span class="hljs-literal">true</span> });
+        })
+}
+
+<span class="hljs-comment">// PTZ Control Panel Render (only shown if camera has PTZ capability)</span>
+{
+    cameraConfig?.PTZ &amp;&amp; 
+    (
+        <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">container</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.ptzControlContainer}</span> <span class="hljs-attr">spacing</span>=<span class="hljs-string">{0}</span>&gt;</span>
+            {/* Tilt Up (continuous while held) */}
+            <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">item</span> <span class="hljs-attr">xs</span>=<span class="hljs-string">{12}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">KeyboardDoubleArrowUp</span> 
+                    <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.ptzControlsDoubleUp}</span> 
+                    <span class="hljs-attr">onMouseDown</span>=<span class="hljs-string">{()</span> =&gt;</span> handlePTZControl('tiltup')} 
+                    onMouseUp={() =&gt; handlePTZControl('stop')} 
+                /&gt;
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+
+            {/* Up (single step) */}
+            <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">item</span> <span class="hljs-attr">xs</span>=<span class="hljs-string">{12}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">KeyboardArrowUpTwoTone</span> 
+                    <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.ptzControlsUp}</span> 
+                    <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> handlePTZControl('up')} 
+                /&gt;
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+
+            {/* Left Controls */}
+            <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">item</span> <span class="hljs-attr">xs</span>=<span class="hljs-string">{3}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">KeyboardDoubleArrowLeft</span> 
+                    <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.ptzControlsDoubleLeft}</span> 
+                    <span class="hljs-attr">onMouseDown</span>=<span class="hljs-string">{()</span> =&gt;</span> handlePTZControl('panleft')} 
+                    onMouseUp={() =&gt; handlePTZControl('stop')} 
+                /&gt;
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+
+            {/* Center Controls (Left, Home, Right) */}
+            <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">item</span> <span class="hljs-attr">xs</span>=<span class="hljs-string">{6}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">container</span> <span class="hljs-attr">spacing</span>=<span class="hljs-string">{1}</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">item</span> <span class="hljs-attr">xs</span>=<span class="hljs-string">{4}</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">KeyboardArrowLeftTwoTone</span> 
+                            <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.ptzControlsLeft}</span> 
+                            <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> handlePTZControl('left')} 
+                        /&gt;
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">item</span> <span class="hljs-attr">xs</span>=<span class="hljs-string">{4}</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">HomeIcon</span> 
+                            <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.ptzControlsMiddle}</span> 
+                            <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> handlePTZControl('home')} 
+                        /&gt;
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">item</span> <span class="hljs-attr">xs</span>=<span class="hljs-string">{4}</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">KeyboardArrowRightTwoTone</span> 
+                            <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.ptzControlsRight}</span> 
+                            <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> handlePTZControl('right')} 
+                        /&gt;
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+
+            {/* Right Controls */}
+            <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">item</span> <span class="hljs-attr">xs</span>=<span class="hljs-string">{3}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">KeyboardDoubleArrowRight</span> 
+                    <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.ptzControlsDoubleRight}</span> 
+                    <span class="hljs-attr">onMouseDown</span>=<span class="hljs-string">{()</span> =&gt;</span> handlePTZControl('panright')} 
+                    onMouseUp={() =&gt; handlePTZControl('stop')} 
+                /&gt;
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+
+            {/* Bottom Controls (Zoom In, Down, Zoom Out) */}
+            <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">item</span> <span class="hljs-attr">xs</span>=<span class="hljs-string">{12}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">container</span> <span class="hljs-attr">spacing</span>=<span class="hljs-string">{1}</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">item</span> <span class="hljs-attr">xs</span>=<span class="hljs-string">{4}</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">ZoomInIcon</span> 
+                            <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.ptzControlsZoomIn}</span> 
+                            <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> handlePTZControl('zoomin')} 
+                        /&gt;
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">item</span> <span class="hljs-attr">xs</span>=<span class="hljs-string">{4}</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">KeyboardArrowDownTwoTone</span> 
+                            <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.ptzControlsDown}</span> 
+                            <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> handlePTZControl('down')} 
+                        /&gt;
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+                    <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">item</span> <span class="hljs-attr">xs</span>=<span class="hljs-string">{4}</span>&gt;</span>
+                        <span class="hljs-tag">&lt;<span class="hljs-name">ZoomOutIcon</span> 
+                            <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.ptzControlsZoomOut}</span> 
+                            <span class="hljs-attr">onClick</span>=<span class="hljs-string">{()</span> =&gt;</span> handlePTZControl('zoomout')} 
+                        /&gt;
+                    <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+                <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+            
+            {/* Tilt Down (continuous while held) */}
+            <span class="hljs-tag">&lt;<span class="hljs-name">Grid</span> <span class="hljs-attr">item</span> <span class="hljs-attr">xs</span>=<span class="hljs-string">{12}</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">KeyboardDoubleArrowDown</span> 
+                    <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.ptzControlsDoubleDown}</span> 
+                    <span class="hljs-attr">onMouseDown</span>=<span class="hljs-string">{()</span> =&gt;</span> handlePTZControl('tiltdown')} 
+                    onMouseUp={() =&gt; handlePTZControl('stop')} 
+                /&gt;
+            <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Grid</span>&gt;</span></span>
+    )
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li><strong>PTZ Control Panel Layout</strong>: 3x3 grid with directional arrows, home button, and zoom controls</li>
+<li><strong>Two Control Modes</strong>:
+<ul>
+<li><strong>Click (onClick)</strong>: Single-step movements (up, down, left, right, zoomin, zoomout, home)</li>
+<li><strong>Hold (onMouseDown/onMouseUp)</strong>: Continuous movements (tiltup, tiltdown, panleft, panright) - stops when mouse released</li>
+</ul>
+</li>
+<li><strong>Conditional Display</strong>: PTZ panel only shown if <code>cameraConfig.PTZ</code> is true</li>
+<li><strong>Commands Supported</strong>:
+<ul>
+<li><code>up</code>, <code>down</code>, <code>left</code>, <code>right</code> - Single-step movements</li>
+<li><code>tiltup</code>, <code>tiltdown</code>, <code>panleft</code>, <code>panright</code> - Continuous movements (requires stop command)</li>
+<li><code>zoomin</code>, <code>zoomout</code> - Zoom controls</li>
+<li><code>home</code> - Return to preset home position</li>
+<li><code>stop</code> - Stop continuous movement</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="ptz-backend-processing">PTZ Backend Processing</h4>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>video/src/VideoApi/Controllers/DataController.cs</code>]</li>
+<li>[<code>video/src/MilestoneService/Controllers/DataController.cs</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong> (Backend - Video API Route):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From VideoApi DataController.cs</span>
+[<span class="hljs-meta">HttpPost(<span class="hljs-meta-string">"moveptzcamera/{direction}"</span>)</span>]
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">MovePTZCamera</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> direction, [FromBody] CameraConfig cameraConfig</span>)</span>
+{
+    <span class="hljs-comment">// Get PTZ controller configuration for this camera</span>
+    <span class="hljs-keyword">var</span> ptzController = _dbContext.CacheGet&lt;PtzController&gt;()
+        .FirstOrDefault(x =&gt; x.Id == cameraConfig.PtzControllerId);
+    
+    <span class="hljs-keyword">if</span> (ptzController == <span class="hljs-literal">null</span>)
+        <span class="hljs-keyword">return</span> NotFound(<span class="hljs-string">"PTZ Controller not configured"</span>);
+    
+    <span class="hljs-comment">// Get camera external reference based on VMS type</span>
+    <span class="hljs-keyword">string</span> externalCameraRef = GetExternalCameraReference(cameraConfig, ptzController.ControllerName);
+    
+    <span class="hljs-comment">// Forward PTZ command to VMS-specific service</span>
+    <span class="hljs-keyword">var</span> ptzUrl = Flurl.Url.Combine(
+        ptzController.RecorderUrl, 
+        <span class="hljs-string">"moveptzcamera"</span>, 
+        externalCameraRef, 
+        ptzController.ControllerName.ToString(), 
+        direction
+    );
+    
+    <span class="hljs-keyword">await</span> ptzUrl.PostAsync();
+    
+    <span class="hljs-keyword">return</span> Ok();
+}
+</div></code></pre>
+<p><strong>Code Snippet</strong> (Backend - Milestone PTZ Control):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From MilestoneService DataController.cs</span>
+[<span class="hljs-meta">HttpPost</span>]
+[<span class="hljs-meta">Route(<span class="hljs-meta-string">"moveptzcamera/{cameraid}/{controllername}/{direction}"</span>)</span>]
+<span class="hljs-function"><span class="hljs-keyword">public</span> IEnumerable&lt;<span class="hljs-keyword">string</span>&gt; <span class="hljs-title">ptzcameracontrol</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> cameraid, <span class="hljs-keyword">string</span> controllername, <span class="hljs-keyword">string</span> direction</span>)</span>
+{
+    <span class="hljs-comment">// Initialize Milestone SDK</span>
+    VideoOS.Platform.SDK.Environment.Initialize();
+    
+    Uri uri = <span class="hljs-keyword">new</span> Uri(milestoneUrl);
+    _credentialCache = VideoOS.Platform.Login.Util.BuildCredentialCache(
+        uri, milestoneUsername, milestonePassword, milestoneAuthorization
+    );
+    
+    <span class="hljs-comment">// Load Milestone site item</span>
+    Item siteItem = VideoOS.Platform.SDK.Environment.LoadSiteItem(<span class="hljs-literal">false</span>, uri, _credentialCache);
+    
+    <span class="hljs-comment">// Get camera FQID from internal dictionary</span>
+    Guid cameraGuid = Guid.Parse(cameraid);
+    <span class="hljs-keyword">var</span> fqid = namedict[cameraGuid];
+    
+    <span class="hljs-comment">// Execute PTZ command based on direction</span>
+    <span class="hljs-keyword">if</span> (direction.ToLower() == <span class="hljs-string">"up"</span>)
+        MoveUpClicked(fqid);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (direction.ToLower() == <span class="hljs-string">"down"</span>)
+        MoveDownClicked(fqid);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (direction.ToLower() == <span class="hljs-string">"right"</span>)
+        MoveRightClicked(fqid);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (direction.ToLower() == <span class="hljs-string">"left"</span>)
+        MoveLeftClicked(fqid);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (direction.ToLower() == <span class="hljs-string">"zoomin"</span>)
+        ZoominCliked(fqid);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (direction.ToLower() == <span class="hljs-string">"zoomout"</span>)
+        ZoomoutCliked(fqid);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (direction.ToLower() == <span class="hljs-string">"panleft"</span>)
+        PanLeftCliked(fqid);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (direction.ToLower() == <span class="hljs-string">"panright"</span>)
+        PanRightCliked(fqid);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (direction.ToLower() == <span class="hljs-string">"tiltup"</span>)
+        TiltUpCliked(fqid);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (direction.ToLower() == <span class="hljs-string">"tiltdown"</span>)
+        TiltDownCliked(fqid);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (direction.ToLower() == <span class="hljs-string">"stop"</span>)
+        StopMoveClicked(fqid);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (direction.ToLower() == <span class="hljs-string">"home"</span>)
+        MoveHomeClicked(fqid);
+    
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-keyword">string</span>[] { <span class="hljs-string">"success"</span> };
+}
+
+<span class="hljs-comment">// Individual PTZ command methods</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">MoveUpClicked</span>(<span class="hljs-params">FQID fqid</span>)</span>
+{
+    EnvironmentManager.Instance.PostMessage(
+        <span class="hljs-keyword">new</span> Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.Up), 
+        fqid
+    );
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">MoveDownClicked</span>(<span class="hljs-params">FQID fqid</span>)</span>
+{
+    EnvironmentManager.Instance.PostMessage(
+        <span class="hljs-keyword">new</span> Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.Down), 
+        fqid
+    );
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">MoveLeftClicked</span>(<span class="hljs-params">FQID fqid</span>)</span>
+{
+    EnvironmentManager.Instance.PostMessage(
+        <span class="hljs-keyword">new</span> Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.Left), 
+        fqid
+    );
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">MoveRightClicked</span>(<span class="hljs-params">FQID fqid</span>)</span>
+{
+    EnvironmentManager.Instance.PostMessage(
+        <span class="hljs-keyword">new</span> Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.Right), 
+        fqid
+    );
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ZoominCliked</span>(<span class="hljs-params">FQID fqid</span>)</span>
+{
+    EnvironmentManager.Instance.PostMessage(
+        <span class="hljs-keyword">new</span> Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.ZoomIn), 
+        fqid
+    );
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">ZoomoutCliked</span>(<span class="hljs-params">FQID fqid</span>)</span>
+{
+    EnvironmentManager.Instance.PostMessage(
+        <span class="hljs-keyword">new</span> Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.ZoomOut), 
+        fqid
+    );
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">MoveHomeClicked</span>(<span class="hljs-params">FQID fqid</span>)</span>
+{
+    EnvironmentManager.Instance.PostMessage(
+        <span class="hljs-keyword">new</span> Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.Home), 
+        fqid
+    );
+}
+
+<span class="hljs-comment">// Continuous movement methods (pan/tilt with speed control)</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">PanLeftCliked</span>(<span class="hljs-params">FQID fqid</span>)</span>
+{
+    StartMoveClicked(fqid, panSlide: <span class="hljs-number">-1</span>, panSpeed: <span class="hljs-number">0.5</span>, tiltSlide: <span class="hljs-number">0</span>, tiltSpeed: <span class="hljs-number">0</span>, zoomSlide: <span class="hljs-number">0</span>, zoomSpeed: <span class="hljs-number">0</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">PanRightCliked</span>(<span class="hljs-params">FQID fqid</span>)</span>
+{
+    StartMoveClicked(fqid, panSlide: <span class="hljs-number">1</span>, panSpeed: <span class="hljs-number">0.5</span>, tiltSlide: <span class="hljs-number">0</span>, tiltSpeed: <span class="hljs-number">0</span>, zoomSlide: <span class="hljs-number">0</span>, zoomSpeed: <span class="hljs-number">0</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">TiltUpCliked</span>(<span class="hljs-params">FQID fqid</span>)</span>
+{
+    StartMoveClicked(fqid, panSlide: <span class="hljs-number">0</span>, panSpeed: <span class="hljs-number">0</span>, tiltSlide: <span class="hljs-number">-1</span>, tiltSpeed: <span class="hljs-number">0.5</span>, zoomSlide: <span class="hljs-number">0</span>, zoomSpeed: <span class="hljs-number">0</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">TiltDownCliked</span>(<span class="hljs-params">FQID fqid</span>)</span>
+{
+    StartMoveClicked(fqid, panSlide: <span class="hljs-number">0</span>, panSpeed: <span class="hljs-number">0</span>, tiltSlide: <span class="hljs-number">1</span>, tiltSpeed: <span class="hljs-number">0.5</span>, zoomSlide: <span class="hljs-number">0</span>, zoomSpeed: <span class="hljs-number">0</span>);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">StartMoveClicked</span>(<span class="hljs-params">FQID fqid, <span class="hljs-keyword">int</span> panSlide = <span class="hljs-number">0</span>, <span class="hljs-keyword">double</span> panSpeed = <span class="hljs-number">0</span>, 
+    <span class="hljs-keyword">int</span> tiltSlide = <span class="hljs-number">0</span>, <span class="hljs-keyword">double</span> tiltSpeed = <span class="hljs-number">0</span>, <span class="hljs-keyword">int</span> zoomSlide = <span class="hljs-number">0</span>, <span class="hljs-keyword">double</span> zoomSpeed = <span class="hljs-number">0</span></span>)</span>
+{
+    PTZMoveStartCommandData2 data = <span class="hljs-keyword">new</span> PTZMoveStartCommandData2();
+    data.Pan = panSlide;
+    data.PanSpeed = panSpeed;
+    data.Tilt = tiltSlide;
+    data.TiltSpeed = tiltSpeed;
+    data.Zoom = zoomSlide;
+    data.ZoomSpeed = zoomSpeed;
+    
+    EnvironmentManager.Instance.PostMessage(
+        <span class="hljs-keyword">new</span> Message(MessageId.Control.PTZMoveStartCommand, data), 
+        fqid
+    );
+}
+
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">StopMoveClicked</span>(<span class="hljs-params">FQID fqid</span>)</span>
+{
+    EnvironmentManager.Instance.PostMessage(
+        <span class="hljs-keyword">new</span> Message(MessageId.Control.PTZMoveStopCommand), 
+        fqid
+    );
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li><strong>VideoApi Layer</strong>: Routes PTZ commands to appropriate VMS service based on camera configuration</li>
+<li><strong>Milestone Integration</strong>: Uses Milestone Mobile SDK for PTZ control
+<ul>
+<li><code>PTZMoveCommand</code>: Simple directional commands (up, down, left, right, zoom)</li>
+<li><code>PTZMoveStartCommand</code>: Continuous movement with speed control (pan/tilt)</li>
+<li><code>PTZMoveStopCommand</code>: Stops continuous movement</li>
+</ul>
+</li>
+<li><strong>Speed Control</strong>: Pan and tilt speeds set to 0.5 (50% of maximum speed) for smooth control</li>
+<li><strong>Direction Parameters</strong>:
+<ul>
+<li><code>panSlide</code>: -1 (left), 0 (none), 1 (right)</li>
+<li><code>tiltSlide</code>: -1 (up), 0 (none), 1 (down)</li>
+<li><code>panSpeed/tiltSpeed</code>: 0.0 to 1.0 (percentage of max speed)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="ptz-controller-configuration">PTZ Controller Configuration</h4>
+<p><strong>Database Model</strong>:</p>
+<ul>
+<li>[<code>video/src/VideoDb/Models/PtzController.cs</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From PtzController.cs</span>
+[<span class="hljs-meta">Audited</span>]
+[<span class="hljs-meta">Display(Name = <span class="hljs-meta-string">"PTZ Controller"</span>)</span>]
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PtzController</span> {
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Id { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+    [<span class="hljs-meta">Required</span>]
+    [<span class="hljs-meta">StringLength(255)</span>]
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> Name { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+    [<span class="hljs-meta">Required</span>]
+    [<span class="hljs-meta">Display(Name = <span class="hljs-meta-string">"Controller Name"</span>)</span>]
+    <span class="hljs-keyword">public</span> SnapshotControllerName ControllerName { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }  <span class="hljs-comment">// Milestone, Dahua, etc.</span>
+
+    [<span class="hljs-meta">StringLength(2000)</span>]
+    [<span class="hljs-meta">Url</span>]
+    [<span class="hljs-meta">Display(Name = <span class="hljs-meta-string">"Recorder URL"</span>)</span>]
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> RecorderUrl { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }  <span class="hljs-comment">// URL of PTZ control service</span>
+
+    [<span class="hljs-meta">Display(Name = <span class="hljs-meta-string">"Server IP Address"</span>)</span>]
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> ServerIp { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+    [<span class="hljs-meta">Display(Name = <span class="hljs-meta-string">"Server Port"</span>)</span>]
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>? ServerPort { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+    [<span class="hljs-meta">Display(Name = <span class="hljs-meta-string">"Backup Server IP Address"</span>)</span>]
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> BackupServerIp { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+
+    [<span class="hljs-meta">Display(Name = <span class="hljs-meta-string">"Backup Server Port"</span>)</span>]
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>? BackupServerPort { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+}
+
+<span class="hljs-comment">// Camera configuration links to PTZ controller</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">CameraConfig</span> {
+    <span class="hljs-comment">// ... other properties</span>
+    
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span>? PtzControllerId { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> PtzController PtzController { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+}
+</div></code></pre>
+<p><strong>Configuration Flow</strong>:</p>
+<ol>
+<li>Administrator configures PTZ Controller with VMS connection details</li>
+<li>Camera configuration links to PTZ Controller via <code>PtzControllerId</code></li>
+<li>Frontend checks <code>cameraConfig.PTZ</code> flag to show/hide PTZ controls</li>
+<li>PTZ commands routed through configured controller to VMS</li>
+</ol>
+<hr>
+<h2 id="feature-2-short-playback-automatic-case-footage">Feature 2: Short Playback (Automatic Case Footage)</h2>
+<h3 id="overview">Overview</h3>
+<p>Short Playback automatically generates <strong>10-second video clips</strong> (configurable) and snapshot images when cases/alarms are created. This provides immediate visual context for incidents without requiring manual footage retrieval. The clips are pre-recorded MP4 files stored on the server and displayed in the case detail page.</p>
+<p><strong>Key Characteristics</strong>:</p>
+<ul>
+<li><strong>Automatic</strong>: Triggered by case creation, no user action required</li>
+<li><strong>Short duration</strong>: Default 10 seconds (5 before + 5 after event)</li>
+<li><strong>Pre-recorded</strong>: MP4 files and JPEG images stored on server</li>
+<li><strong>Multi-camera</strong>: Captures from equipment camera + closest cameras</li>
+<li><strong>File-based</strong>: Served as downloadable files, not streamed</li>
+</ul>
+<p><strong>Differences from External Playback</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Short Playback</th>
+<th>External Playback</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Trigger</strong></td>
+<td>Automatic (case creation)</td>
+<td>User-initiated</td>
+</tr>
+<tr>
+<td><strong>Duration</strong></td>
+<td>10 seconds (configurable)</td>
+<td>User-defined (minutes to hours)</td>
+</tr>
+<tr>
+<td><strong>Format</strong></td>
+<td>Pre-recorded MP4 files</td>
+<td>Real-time WebSocket streaming</td>
+</tr>
+<tr>
+<td><strong>Purpose</strong></td>
+<td>Quick incident review</td>
+<td>Detailed investigation</td>
+</tr>
+<tr>
+<td><strong>Storage</strong></td>
+<td>Permanent files on server</td>
+<td>Streamed on-demand, not stored</td>
+</tr>
+<tr>
+<td><strong>Access</strong></td>
+<td>Case detail page</td>
+<td>Dedicated playback page</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="short-playback-step-by-step-processing-flow">Short Playback: Step-by-Step Processing Flow</h3>
+<h4 id="step-1-case-created---message-published">Step 1: Case Created - Message Published</h4>
+<p><strong>Description</strong>: When a case is created (via API, automation, or alarm trigger), the CMS (Case Management System) API publishes a message to RabbitMQ indicating a new case has been created. This triggers the automatic footage generation process.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/pages/video/playback.js</code>]</li>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/pages/video/liveview.js</code>]</li>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/camera.js</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong> (Playback Page Initialization):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From playback.js</span>
+<span class="hljs-keyword">const</span> getCameraGroups = <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">let</span> disco = <span class="hljs-keyword">await</span> Discovery.get();
+    <span class="hljs-keyword">let</span> url = <span class="hljs-string">`<span class="hljs-subst">${disco[<span class="hljs-string">'mozart-video-api_endpoint'</span>]}</span>/cameragroups`</span>;
+    <span class="hljs-keyword">return</span> mozartApi.get(url, <span class="hljs-literal">true</span>)
+};
+
+<span class="hljs-keyword">const</span> getLocations = <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">let</span> disco = <span class="hljs-keyword">await</span> Discovery.get();
+    <span class="hljs-keyword">let</span> url = <span class="hljs-string">`<span class="hljs-subst">${disco[<span class="hljs-string">'mozart-core-api_endpoint'</span>]}</span>/locations`</span>;
+    <span class="hljs-keyword">return</span> mozartApi.get(url, <span class="hljs-literal">true</span>);
+};
+
+<span class="hljs-comment">// Camera component loads configuration</span>
+<span class="hljs-keyword">const</span> getCameraConfig = <span class="hljs-keyword">async</span> (assetId) =&gt; {
+    <span class="hljs-keyword">let</span> disco = <span class="hljs-keyword">await</span> Discovery.get();
+    <span class="hljs-keyword">let</span> url = <span class="hljs-string">`<span class="hljs-subst">${disco[<span class="hljs-string">'mozart-video-api_endpoint'</span>]}</span>/cameraconfigs/asset/<span class="hljs-subst">${assetId}</span>`</span>;
+    <span class="hljs-keyword">return</span> mozartApi.get(url, <span class="hljs-literal">true</span>);
+}
+
+<span class="hljs-keyword">const</span> getPlaybackControllers = <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">let</span> disco = <span class="hljs-keyword">await</span> Discovery.get();
+    <span class="hljs-keyword">let</span> url = <span class="hljs-string">`<span class="hljs-subst">${disco[<span class="hljs-string">'mozart-video-api_endpoint'</span>]}</span>/playbackcontrollers`</span>;
+    <span class="hljs-keyword">return</span> mozartApi.get(url, <span class="hljs-literal">true</span>);
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li>The Discovery service provides endpoints for different microservices (core-api, video-api)</li>
+<li>Camera configuration includes controller IDs that determine whether to use Milestone or Dahua</li>
+<li><code>PlaybackController</code> or <code>LiveViewController</code> configuration determines which video service to connect to</li>
+</ul>
+<hr>
+<h4 id="step-2-websocket-connection-setup">Step 2: WebSocket Connection Setup</h4>
+<p><strong>Description</strong>: Before requesting External Playback, the frontend obtains a WebSocket URL and session ID from the video service. This establishes a dedicated channel for streaming video frames.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/playbackcameraframes_byimageframes.js</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong> (Frontend WebSocket Connection):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From playbackcameraframes_byimageframes.js</span>
+<span class="hljs-keyword">const</span> getPlaybackUrl = <span class="hljs-keyword">async</span> (cameraConfigId, SessionId) =&gt; {
+    <span class="hljs-keyword">if</span> (cameraConfigId == <span class="hljs-literal">null</span>) {
+        <span class="hljs-keyword">return</span>;
+    }
+
+    <span class="hljs-keyword">let</span> disco = <span class="hljs-keyword">await</span> Discovery.get(); 
+    <span class="hljs-keyword">let</span> url = <span class="hljs-string">`<span class="hljs-subst">${disco[<span class="hljs-string">'mozart-video-api_endpoint'</span>]}</span>/playbackurl?cameraConfigId=<span class="hljs-subst">${cameraConfigId}</span>&amp;sessionId=<span class="hljs-subst">${SessionId}</span>`</span>;
+    
+    <span class="hljs-keyword">return</span> mozartApi.get(url, <span class="hljs-literal">false</span>); 
+}
+
+<span class="hljs-keyword">const</span> connectWebSocket = <span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">try</span> {
+        <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> getPlaybackUrl(assetId, playBackSessionId.current);
+        <span class="hljs-keyword">const</span> jsonObject = <span class="hljs-built_in">JSON</span>.parse(result);
+        <span class="hljs-keyword">const</span> url = jsonObject.url;  <span class="hljs-comment">// WebSocket URL</span>
+        <span class="hljs-keyword">const</span> sessionId = jsonObject.sessionId;  <span class="hljs-comment">// Unique session ID</span>
+        playBackSessionId.current = sessionId;
+        <span class="hljs-keyword">const</span> ws = <span class="hljs-keyword">new</span> WebSocket(url);
+
+        ws.onopen = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+            setSocketStatus(<span class="hljs-string">'connected'</span>);
+            <span class="hljs-keyword">let</span> time = moment(startDate).add(startSecond, <span class="hljs-string">'seconds'</span>).format(<span class="hljs-string">'YYYY-MM-DD HH:mm'</span>);
+
+            <span class="hljs-keyword">if</span> (assetId) {
+                sendPlaybackRequest(time, sessionId, assetId);
+            }
+        }
+
+        ws.onmessage = <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+            <span class="hljs-keyword">const</span> messageData = <span class="hljs-built_in">JSON</span>.parse(event.data);
+            
+            <span class="hljs-keyword">if</span> (!messageData.hasOwnProperty(<span class="hljs-string">'image'</span>) || !messageData.hasOwnProperty(<span class="hljs-string">'time'</span>)) {
+                <span class="hljs-keyword">return</span>;
+            }
+
+            <span class="hljs-keyword">const</span> imageUrl = <span class="hljs-string">"data:image/png;base64,"</span> + messageData.image;
+            <span class="hljs-keyword">const</span> date = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(messageData.time);
+            <span class="hljs-keyword">const</span> totalSeconds = (date.getHours() * <span class="hljs-number">3600</span>) + (date.getMinutes() * <span class="hljs-number">60</span>) + date.getSeconds();
+            currentPlayTime.current = totalSeconds; 
+
+            setTimeRangeValue([totalSeconds, <span class="hljs-number">86399</span>]);
+            setMessage(imageUrl);  <span class="hljs-comment">// Display the frame</span>
+        }
+
+        ws.onclose = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+            handleStopPlayback(); 
+            setSocketStatus(<span class="hljs-string">'disconnected'</span>);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'WebSocket disconnected'</span>);
+        }
+
+        ws.onerror = <span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {
+            handleStopPlayback(); 
+            setSocketStatus(<span class="hljs-string">'error'</span>);
+            <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'WebSocket error:'</span>, error);
+            setError(error);
+        }
+
+        socketRef.current = ws;
+    } <span class="hljs-keyword">catch</span> (error) {
+        <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Error connecting to WebSocket:'</span>, error);
+    }
+}
+</div></code></pre>
+<p><strong>Corresponding Source Files</strong> (Backend):</p>
+<ul>
+<li>[<code>video/MilestoneMediaServices/Controllers/MediaController.cs</code>]</li>
+<li>[<code>video/DahuaMediaServices/DahuaMediaServices/Controllers/MediaController.cs</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong> (Backend - Milestone):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From MilestoneMediaServices MediaController.cs</span>
+[<span class="hljs-meta">HttpGet(<span class="hljs-meta-string">"playbackurl"</span>)</span>]
+<span class="hljs-keyword">public</span> Task&lt;ActionResult&lt;<span class="hljs-keyword">dynamic</span>&gt;&gt; GetPlaybackurl(<span class="hljs-keyword">string</span>? sessionId)
+{
+    sessionId = Guid.NewGuid().ToString();
+
+    <span class="hljs-comment">// Generate the URL for the WebSocket endpoint </span>
+    <span class="hljs-keyword">string</span> endpointUrl = <span class="hljs-string">$"<span class="hljs-subst">{_configuration[<span class="hljs-string">"WebSocketServerUrl"</span>]}</span>/<span class="hljs-subst">{sessionId}</span>"</span>;
+
+    <span class="hljs-comment">// Create a dynamic object to hold the endpoint URL and session ID</span>
+    <span class="hljs-keyword">var</span> result = <span class="hljs-keyword">new</span>
+    {
+        Url = endpointUrl,
+        SessionId = sessionId,
+    };
+
+    <span class="hljs-comment">// Return the WebSocket endpoint URL and session ID to the client as a JSON object</span>
+    <span class="hljs-keyword">return</span> Task.FromResult&lt;ActionResult&lt;<span class="hljs-keyword">dynamic</span>&gt;&gt;(Ok(result));
+}
+
+[<span class="hljs-meta">HttpGet(<span class="hljs-meta-string">"ws/{sessionId}"</span>)</span>]
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">HandleWebSocket</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> sessionId</span>)</span>
+{
+    <span class="hljs-keyword">if</span> (HttpContext.WebSockets.IsWebSocketRequest)
+    {
+        <span class="hljs-keyword">using</span> <span class="hljs-keyword">var</span> webSocket = <span class="hljs-keyword">await</span> HttpContext.WebSockets.AcceptWebSocketAsync();
+        <span class="hljs-keyword">await</span> _webSocketServer.AddConnectionAsync(sessionId, webSocket);
+        <span class="hljs-keyword">return</span> Ok();
+    }
+    <span class="hljs-keyword">else</span>
+    {
+        <span class="hljs-keyword">return</span> BadRequest(<span class="hljs-string">"This endpoint only accepts WebSocket requests."</span>);
+    }
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li>The backend generates a unique session ID for each video stream request</li>
+<li>Returns a WebSocket URL that the frontend connects to</li>
+<li>When frontend connects, the WebSocket is stored in a concurrent dictionary keyed by session ID</li>
+<li>This dedicated WebSocket channel is used to stream video frames</li>
+</ul>
+<hr>
+<h3 id="step-3-start-playback-request">Step 3: Start Playback Request</h3>
+<p><strong>Description</strong>: After WebSocket connection is established, the frontend sends an HTTP POST request to start video playback with specific parameters (camera, time range, resolution).</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/playbackcameraframes_byimageframes.js</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong> (Frontend):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From playbackcameraframes_byimageframes.js</span>
+<span class="hljs-keyword">const</span> sendPlaybackRequest = <span class="hljs-keyword">async</span> (time, sessionId, id,) =&gt; { 
+    <span class="hljs-keyword">let</span> disco = <span class="hljs-keyword">await</span> Discovery.get();
+    <span class="hljs-keyword">let</span> url = <span class="hljs-string">`<span class="hljs-subst">${disco[<span class="hljs-string">'mozart-video-api_endpoint'</span>]}</span>/startplayback`</span>;
+
+    <span class="hljs-keyword">let</span> obj = {
+        <span class="hljs-attr">SessionId</span>: sessionId,
+        <span class="hljs-attr">CameraConfigId</span>: id,  <span class="hljs-comment">// Camera reference</span>
+        <span class="hljs-attr">StartTime</span>: time,  
+        <span class="hljs-attr">EndTime</span>: time,  
+        <span class="hljs-attr">Width</span>: <span class="hljs-number">1920</span>,  
+        <span class="hljs-attr">Height</span>: <span class="hljs-number">1080</span>,  
+        <span class="hljs-attr">Speed</span>: playSpeed  
+    };
+
+    <span class="hljs-keyword">return</span> mozartApi.post(url, obj);
+};
+
+<span class="hljs-keyword">const</span> handleRefreshPlayback = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    setIsPlaying(<span class="hljs-literal">true</span>);
+    setIsStopped(<span class="hljs-literal">false</span>);
+    
+    <span class="hljs-keyword">let</span> time = moment(startDate).add(startSecond, <span class="hljs-string">'seconds'</span>).format(<span class="hljs-string">'YYYY-MM-DD HH:mm'</span>);
+
+    <span class="hljs-keyword">if</span> (socketStatus == <span class="hljs-string">"disconnected"</span>) { 
+        <span class="hljs-keyword">if</span> (assetId == <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">return</span>;
+        }
+        connectWebSocket();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (assetId) {
+        sendPlaybackRequest(time, playBackSessionId.current, assetId);
+    }
+}
+</div></code></pre>
+<p><strong>Corresponding Source Files</strong> (Backend):</p>
+<ul>
+<li>[<code>video/MilestoneMediaServices/Controllers/MediaController.cs</code>]</li>
+<li>[<code>video/DahuaMediaServices/DahuaMediaServices/Controllers/MediaController.cs</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong> (Backend - Milestone):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From MilestoneMediaServices MediaController.cs</span>
+[<span class="hljs-meta">HttpPost(<span class="hljs-meta-string">"startplayback"</span>)</span>]
+<span class="hljs-function"><span class="hljs-keyword">public</span> Task&lt;IActionResult&gt; <span class="hljs-title">Startplayback</span>(<span class="hljs-params">PlaybackInput playbackInput</span>)</span>
+{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">string</span>.IsNullOrEmpty(playbackInput.SessionId)) <span class="hljs-keyword">return</span> Task.FromResult&lt;IActionResult&gt;(Ok());
+
+    _logger.LogInformation(<span class="hljs-string">$"Startplayback - sessionid=<span class="hljs-subst">{playbackInput.SessionId}</span>"</span>);
+
+    _milestoneHelper.StartVideo(playbackInput);
+
+    <span class="hljs-keyword">return</span> Task.FromResult&lt;IActionResult&gt;(Ok());
+}
+
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PlaybackInput</span>
+{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> SessionId { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> CameraConfigId { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> ExternalCameraRef { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> DateTime StartTime { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> DateTime EndTime { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Width { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; } = <span class="hljs-number">800</span>;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Height { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; } = <span class="hljs-number">600</span>;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Speed { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; } = <span class="hljs-number">1</span>;
+}
+</div></code></pre>
+<p><strong>Code Snippet</strong> (Backend - Dahua):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From DahuaMediaServices MediaController.cs</span>
+[<span class="hljs-meta">HttpPost(<span class="hljs-meta-string">"startplayback"</span>)</span>]
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">Startplayback</span>(<span class="hljs-params">PlaybackInput playbackInput</span>)</span>
+{
+    _logger.LogWarning(<span class="hljs-string">$"Startplayback sessionid=<span class="hljs-subst">{playbackInput.SessionId}</span>,ExternalCameraRef=<span class="hljs-subst">{playbackInput.ExternalCameraRef}</span>,StartTime=<span class="hljs-subst">{playbackInput.StartTime}</span>, EndTime=<span class="hljs-subst">{playbackInput.EndTime}</span> "</span>);
+
+    <span class="hljs-comment">// Validate SessionId</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">string</span>.IsNullOrEmpty(playbackInput.SessionId))
+    {
+        <span class="hljs-keyword">return</span> BadRequest(<span class="hljs-keyword">new</span> { error = <span class="hljs-string">"SessionId is required"</span> });
+    }
+
+    <span class="hljs-comment">// Validate ExternalCameraRef</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">string</span>.IsNullOrWhiteSpace(playbackInput.ExternalCameraRef))
+    {
+        _logger.LogWarning(<span class="hljs-string">$"Startplayback failed - ExternalCameraRef=<span class="hljs-subst">{playbackInput.ExternalCameraRef}</span>, ExternalCameraRef is missing"</span>);
+        <span class="hljs-keyword">return</span> BadRequest(<span class="hljs-keyword">new</span> { error = <span class="hljs-string">"ExternalCameraRef is required"</span> });
+    }
+
+    <span class="hljs-comment">// Validate time parameters...</span>
+    _logger.LogInformation(<span class="hljs-string">$"Startplayback - sessionid=<span class="hljs-subst">{playbackInput.SessionId}</span>"</span>);
+
+    <span class="hljs-keyword">bool</span> resultok = <span class="hljs-keyword">await</span> _dahuaHelper.StartVideo(playbackInput);
+
+    <span class="hljs-keyword">return</span> Ok();
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li>Frontend sends playback parameters including session ID, camera ID, time range, and resolution</li>
+<li>Backend validates the request and triggers the video streaming process</li>
+<li>The session ID links this playback request to the previously established WebSocket connection</li>
+</ul>
+<hr>
+<h3 id="step-4a-milestone-video-processing-image-frames">Step 4A: Milestone Video Processing (Image Frames)</h3>
+<p><strong>Description</strong>: For Milestone cameras, the service uses the Milestone Mobile SDK to connect to the Milestone server and retrieve video frames directly as JPEG images.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>video/MilestoneMediaServices/MilestoneHelper.cs</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From MilestoneHelper.cs</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">MilestoneHelper</span>
+{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> ConcurrentDictionary&lt;<span class="hljs-keyword">string</span>, MilestoneConnection&gt; MilestoneConnectionList = <span class="hljs-keyword">new</span>();
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> WebSocketServer _webSocketServer;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> MilestoneConfiguration _milestoneConfiguration;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> ILogger&lt;MilestoneHelper&gt; _logger;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">MilestoneHelper</span>(<span class="hljs-params">IOptions&lt;MilestoneConfiguration&gt; milestoneConfigOptions, 
+                          WebSocketServer webSocketServer, 
+                          ILogger&lt;MilestoneHelper&gt; logger</span>)</span>
+    {
+        _webSocketServer = webSocketServer;
+        _milestoneConfiguration = milestoneConfigOptions.Value;
+        _logger = logger;
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">StartVideo</span>(<span class="hljs-params">PlaybackInput playbackInput</span>)</span>
+    {
+        MilestoneConnection milestoneConnection;
+        <span class="hljs-keyword">if</span> (MilestoneConnectionList.TryGetValue(playbackInput.SessionId, <span class="hljs-keyword">out</span> milestoneConnection))
+            milestoneConnection.ReStartVideo(playbackInput); <span class="hljs-comment">// Existing playback, user selected new playback attribute</span>
+        <span class="hljs-keyword">else</span>
+        {
+            milestoneConnection = <span class="hljs-keyword">new</span> MilestoneConnection(playbackInput, _milestoneConfiguration, _webSocketServer, _logger);
+            milestoneConnection.ReStartVideo();
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">CloseVideo</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> sessionId</span>)</span>
+    {
+        MilestoneConnection milestoneConnection;
+        <span class="hljs-keyword">if</span> (MilestoneConnectionList.TryGetValue(sessionId, <span class="hljs-keyword">out</span> milestoneConnection))
+            milestoneConnection.CloseVideo();
+    }
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li>MilestoneHelper manages multiple concurrent video connections using a concurrent dictionary</li>
+<li>Each connection is represented by a <code>MilestoneConnection</code> object</li>
+<li>The MilestoneConnection uses the Milestone Mobile SDK APIs to:
+<ul>
+<li>Connect to the Milestone Mobile Server</li>
+<li>Request video frames for specific camera and time range</li>
+<li>Receive JPEG image frames directly from Milestone</li>
+<li>Forward these frames to the WebSocket for transmission to frontend</li>
+</ul>
+</li>
+</ul>
+<p><strong>Data Flow</strong>:</p>
+<pre class="hljs"><code><div>Milestone Server → Milestone Mobile SDK → MilestoneConnection → WebSocketServer → Frontend
+     (JPEG frames)
+</div></code></pre>
+<hr>
+<h3 id="step-4b-dahua-video-processing-rtsp-to-image-frames">Step 4B: Dahua Video Processing (RTSP to Image Frames)</h3>
+<p><strong>Description</strong>: For Dahua cameras, the service first obtains an RTSP URL from the Dahua DSS Pro server, then uses FFmpeg to convert the RTSP stream into JPEG image frames.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>video/DahuaMediaServices/DahuaMediaServices/Helpers/DahuaHelper.cs</code>]</li>
+<li>[<code>video/DahuaMediaServices/DahuaMediaServices/Helpers/RtspToFrameConverter.cs</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong> (DahuaHelper):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From DahuaHelper.cs</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">DahuaHelper</span>
+{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> DahuaConfig _dahuaConfig;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> DahuaApiHelper _dahuaApiHelper;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> DahuaSessionManager _dahuaSessionManager;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> WebSocketServer _webSocketServer;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> ILogger&lt;DahuaHelper&gt; _logger;
+
+    <span class="hljs-comment">// Store active RTSP converters by session</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Dictionary&lt;<span class="hljs-keyword">string</span>, RtspToFrameConverter&gt; _activeConverters = <span class="hljs-keyword">new</span>();
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Dictionary&lt;<span class="hljs-keyword">string</span>, DateTime&gt; _lastSentFrameDateTime = <span class="hljs-keyword">new</span>();
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> Dictionary&lt;<span class="hljs-keyword">string</span>, DateTime&gt; _initDateTime = <span class="hljs-keyword">new</span>();
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> <span class="hljs-keyword">object</span> _lockObject = <span class="hljs-keyword">new</span> <span class="hljs-keyword">object</span>();
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-title">StartVideo</span>(<span class="hljs-params">PlaybackInput playbackInput</span>)</span>
+    {
+        <span class="hljs-keyword">try</span>
+        {
+            <span class="hljs-comment">// Stop any existing video for this session</span>
+            <span class="hljs-keyword">await</span> StopVideo(playbackInput.SessionId);
+
+            <span class="hljs-comment">// Record init time for this session</span>
+            <span class="hljs-keyword">lock</span> (_lockObject)
+            {
+                _initDateTime[playbackInput.SessionId] = DateTime.Now;
+                _lastSentFrameDateTime[playbackInput.SessionId] = DateTime.MinValue;
+            }
+
+            WebSocket websocket = _webSocketServer.GetWebSocketBySessionId(playbackInput.SessionId);
+            <span class="hljs-keyword">if</span> (websocket == <span class="hljs-literal">null</span> || websocket.State != WebSocketState.Open)
+            {
+                _logger.LogWarning(<span class="hljs-string">$"WebSocket not found or not open for session <span class="hljs-subst">{playbackInput.SessionId}</span>"</span>);
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+            }
+
+            <span class="hljs-comment">// Get RTSP URL from Dahua API</span>
+            <span class="hljs-keyword">string</span> rtsp = <span class="hljs-keyword">await</span> _dahuaApiHelper.GetPlaybackRtspNoLogin(
+                playbackInput.ExternalCameraRef,
+                playbackInput.StartTime,
+                playbackInput.EndTime);
+
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">string</span>.IsNullOrWhiteSpace(rtsp))
+            {
+                _logger.LogWarning(<span class="hljs-string">$"Failed to get RTSP URL for session <span class="hljs-subst">{playbackInput.SessionId}</span>"</span>);
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+            }
+
+            _logger.LogInformation(<span class="hljs-string">$"Starting RTSP stream for session <span class="hljs-subst">{playbackInput.SessionId}</span>, URL: <span class="hljs-subst">{rtsp}</span>"</span>);
+
+            <span class="hljs-comment">// Create new RTSP converter</span>
+            <span class="hljs-keyword">var</span> converter = <span class="hljs-keyword">new</span> RtspToFrameConverter(_logger);
+
+            <span class="hljs-comment">// Subscribe to frame events</span>
+            converter.NewFrame += <span class="hljs-keyword">async</span> (frame, sessionId) =&gt;
+                <span class="hljs-keyword">await</span> OnNewFrame(frame, sessionId);
+
+            converter.StreamEnded += (sessionId, reason) =&gt;
+                OnStreamEnded(sessionId, reason);
+
+            <span class="hljs-comment">// Store converter</span>
+            <span class="hljs-keyword">lock</span> (_lockObject)
+            {
+                _activeConverters[playbackInput.SessionId] = converter;
+            }
+
+            <span class="hljs-comment">// Start streaming (15 FPS default)</span>
+            <span class="hljs-keyword">await</span> converter.StartRtspStream(rtsp, playbackInput.SessionId, targetFps: <span class="hljs-number">15</span>);
+
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+        }
+        <span class="hljs-keyword">catch</span> (Exception ex)
+        {
+            _logger.LogError(ex, <span class="hljs-string">$"Error starting video for session <span class="hljs-subst">{playbackInput.SessionId}</span>"</span>);
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">OnNewFrame</span>(<span class="hljs-params">VideoFrame frame, <span class="hljs-keyword">string</span> sessionId</span>)</span>
+    {
+        <span class="hljs-keyword">if</span> (frame?.Data.Length &lt;= <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>;
+
+        _logger.LogInformation(<span class="hljs-string">$"OnNewFrame - SessionId=<span class="hljs-subst">{sessionId}</span>, FrameTime=<span class="hljs-subst">{frame.MainHeader.TimeStampUtcMs}</span>"</span>);
+
+        <span class="hljs-comment">// Get WebSocket for this session</span>
+        WebSocket webSocket = _webSocketServer.GetWebSocketBySessionId(sessionId);
+
+        <span class="hljs-keyword">if</span> (webSocket == <span class="hljs-literal">null</span> || webSocket.State != WebSocketState.Open)
+        {
+            HandleClientNotConnected(sessionId);
+            <span class="hljs-keyword">return</span>;
+        }
+
+        <span class="hljs-keyword">try</span>
+        {
+            <span class="hljs-comment">// Convert timestamp to local time</span>
+            <span class="hljs-keyword">var</span> frameTime = ConvertTimestampToDateTime(frame.MainHeader.TimeStampUtcMs).ToLocalTime();
+
+            <span class="hljs-comment">// Serialize frame data efficiently</span>
+            <span class="hljs-keyword">var</span> messageBytes = SerializeFrameData(frameTime, frame.Data);
+
+            _logger.LogInformation(<span class="hljs-string">$"Sending frame to session <span class="hljs-subst">{sessionId}</span>, FrameTime=<span class="hljs-subst">{frameTime}</span>"</span>);
+
+            <span class="hljs-keyword">await</span> webSocket.SendAsync(<span class="hljs-keyword">new</span> ArraySegment&lt;<span class="hljs-keyword">byte</span>&gt;(messageBytes),
+                WebSocketMessageType.Text, <span class="hljs-literal">true</span>, CancellationToken.None);
+        }   
+        <span class="hljs-keyword">catch</span> (WebSocketException ex)
+        {
+            _logger.LogWarning(<span class="hljs-string">$"WebSocket error for session <span class="hljs-subst">{sessionId}</span>: <span class="hljs-subst">{ex.Message}</span>"</span>);
+            <span class="hljs-comment">// Handle timeout logic...</span>
+        }
+    }
+}
+</div></code></pre>
+<p><strong>Code Snippet</strong> (RtspToFrameConverter - FFmpeg Integration):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From RtspToFrameConverter.cs</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">RtspToFrameConverter</span> : <span class="hljs-title">IDisposable</span>
+{
+    <span class="hljs-keyword">private</span> Process _ffmpegProcess;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> ILogger _logger;
+    <span class="hljs-keyword">private</span> CancellationTokenSource _cancellationTokenSource;
+    <span class="hljs-keyword">private</span> Task _readingTask;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">string</span> _currentSessionId;
+
+    <span class="hljs-comment">// Events</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">event</span> Func&lt;VideoFrame, <span class="hljs-keyword">string</span>, Task&gt; NewFrame;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">event</span> Action&lt;<span class="hljs-keyword">string</span>, <span class="hljs-keyword">string</span>&gt; StreamEnded;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">StartRtspStream</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> rtspUrl, <span class="hljs-keyword">string</span> sessionId, <span class="hljs-keyword">int</span> targetFps = <span class="hljs-number">15</span></span>)</span>
+    {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">string</span>.IsNullOrWhiteSpace(rtspUrl))
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> ArgumentException(<span class="hljs-string">"RTSP URL cannot be empty"</span>, <span class="hljs-keyword">nameof</span>(rtspUrl));
+
+        _currentSessionId = sessionId;
+        _cancellationTokenSource = <span class="hljs-keyword">new</span> CancellationTokenSource();
+
+        <span class="hljs-keyword">var</span> ffmpegPath = GetFFmpegPath();
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">string</span>.IsNullOrEmpty(ffmpegPath))
+        {
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Exception(<span class="hljs-string">"FFmpeg not found. Please install FFmpeg and ensure it's in the system PATH."</span>);
+        }
+
+        <span class="hljs-keyword">var</span> startInfo = <span class="hljs-keyword">new</span> ProcessStartInfo
+        {
+            FileName = ffmpegPath,
+            Arguments = BuildFFmpegArguments(rtspUrl, targetFps),
+            UseShellExecute = <span class="hljs-literal">false</span>,
+            RedirectStandardOutput = <span class="hljs-literal">true</span>,
+            RedirectStandardError = <span class="hljs-literal">true</span>,
+            CreateNoWindow = <span class="hljs-literal">true</span>
+        };
+
+        _ffmpegProcess = <span class="hljs-keyword">new</span> Process { StartInfo = startInfo };
+
+        <span class="hljs-keyword">try</span>
+        {
+            _ffmpegProcess.Start();
+            _ffmpegProcess.BeginErrorReadLine();
+
+            _logger.LogInformation(<span class="hljs-string">$"Started FFmpeg process for session <span class="hljs-subst">{sessionId}</span>, PID: <span class="hljs-subst">{_ffmpegProcess.Id}</span>"</span>);
+
+            <span class="hljs-comment">// Start reading frames</span>
+            _readingTask = Task.Run(() =&gt; ReadFramesAsync(_cancellationTokenSource.Token));
+        }
+        <span class="hljs-keyword">catch</span> (Exception ex)
+        {
+            _logger.LogError(ex, <span class="hljs-string">$"Failed to start FFmpeg for session <span class="hljs-subst">{sessionId}</span>"</span>);
+            <span class="hljs-keyword">throw</span>;
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">string</span> <span class="hljs-title">BuildFFmpegArguments</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> rtspUrl, <span class="hljs-keyword">int</span> targetFps</span>)</span>
+    {
+        <span class="hljs-comment">// Convert RTSP to JPEG frames</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-string">$"-rtsp_transport tcp "</span> +          <span class="hljs-comment">// TCP for reliability</span>
+               <span class="hljs-string">$"-i \"<span class="hljs-subst">{rtspUrl}</span>\" "</span> +              <span class="hljs-comment">// Input RTSP URL</span>
+               <span class="hljs-string">$"-vf fps=<span class="hljs-subst">{targetFps}</span> "</span> +           <span class="hljs-comment">// Target frame rate (15 FPS)</span>
+               <span class="hljs-string">$"-c:v mjpeg "</span> +                    <span class="hljs-comment">// JPEG codec</span>
+               <span class="hljs-string">$"-q:v 5 "</span> +                        <span class="hljs-comment">// Quality (2-31, lower = better)</span>
+               <span class="hljs-string">$"-f image2pipe "</span> +                 <span class="hljs-comment">// Pipe output</span>
+               <span class="hljs-string">$"-vcodec mjpeg "</span> +
+               <span class="hljs-string">$"-"</span>;                              <span class="hljs-comment">// Output to stdout</span>
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">ReadFramesAsync</span>(<span class="hljs-params">CancellationToken cancellationToken</span>)</span>
+    {
+        <span class="hljs-keyword">try</span>
+        {
+            <span class="hljs-keyword">var</span> stream = _ffmpegProcess.StandardOutput.BaseStream;
+            _logger.LogInformation(<span class="hljs-string">$"Started reading frames for session <span class="hljs-subst">{_currentSessionId}</span>"</span>);
+
+            <span class="hljs-keyword">while</span> (!cancellationToken.IsCancellationRequested &amp;&amp;
+                   !_ffmpegProcess.HasExited)
+            {
+                <span class="hljs-keyword">var</span> frameData = <span class="hljs-keyword">await</span> ReadNextJpegFrameAsync(stream, cancellationToken);
+
+                <span class="hljs-keyword">if</span> (frameData != <span class="hljs-literal">null</span> &amp;&amp; frameData.Length &gt; <span class="hljs-number">0</span>)
+                {
+                    _frameCount++;
+                    _lastFrameTime = DateTime.UtcNow;
+
+                    <span class="hljs-keyword">var</span> videoFrame = <span class="hljs-keyword">new</span> VideoFrame
+                    {
+                        Data = frameData,
+                        MainHeader = <span class="hljs-keyword">new</span> FrameHeader
+                        {
+                            TimeStampUtcMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                        }
+                    };
+
+                    <span class="hljs-comment">// Raise NewFrame event</span>
+                    <span class="hljs-keyword">await</span> NewFrame?.Invoke(videoFrame, _currentSessionId);
+                }
+            }
+        }
+        <span class="hljs-keyword">catch</span> (Exception ex)
+        {
+            _logger.LogError(ex, <span class="hljs-string">$"Error reading frames for session <span class="hljs-subst">{_currentSessionId}</span>"</span>);
+        }
+    }
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li><strong>Step 1</strong>: DahuaApiHelper calls Dahua DSS Pro API to get an RTSP URL for the camera and time range</li>
+<li><strong>Step 2</strong>: RtspToFrameConverter spawns an FFmpeg process with specific arguments:
+<ul>
+<li>Uses TCP transport for reliability</li>
+<li>Converts video to MJPEG format at 15 FPS</li>
+<li>Outputs JPEG frames to stdout (pipe)</li>
+</ul>
+</li>
+<li><strong>Step 3</strong>: ReadFramesAsync continuously reads JPEG frames from FFmpeg's stdout</li>
+<li><strong>Step 4</strong>: Each frame is wrapped in a VideoFrame object and sent via NewFrame event</li>
+<li><strong>Step 5</strong>: DahuaHelper's OnNewFrame handler receives the frame and sends it through WebSocket</li>
+</ul>
+<p><strong>Data Flow</strong>:</p>
+<pre class="hljs"><code><div>Dahua DSS Pro → RTSP URL → FFmpeg Process → JPEG Frames → RtspToFrameConverter → DahuaHelper → WebSocketServer → Frontend
+   (RTSP stream)                              (stdout pipe)
+</div></code></pre>
+<hr>
+<h3 id="step-5-websocket-frame-transmission">Step 5: WebSocket Frame Transmission</h3>
+<p><strong>Description</strong>: Both Milestone and Dahua services use the same WebSocketServer to transmit video frames to the frontend. Frames are serialized as JSON with base64-encoded image data.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>video/MilestoneMediaServices/WebSocketServer.cs</code>]</li>
+<li>[<code>video/DahuaMediaServices/DahuaMediaServices/WebSocketServer.cs</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From WebSocketServer.cs (both services use similar implementation)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">WebSocketServer</span>
+{
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">readonly</span> ConcurrentDictionary&lt;<span class="hljs-keyword">string</span>, WebSocket&gt; _clientSockets = <span class="hljs-keyword">new</span> ConcurrentDictionary&lt;<span class="hljs-keyword">string</span>, WebSocket&gt;();
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> TimeSpan _inactivityTimeout = TimeSpan.FromSeconds(<span class="hljs-number">30</span>);
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> System.Timers.Timer _pingTimer;
+    ILogger&lt;WebSocketServer&gt; _logger;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">WebSocketServer</span>(<span class="hljs-params">ILogger&lt;WebSocketServer&gt; logger</span>)</span>
+    {
+        <span class="hljs-comment">// Initialize a timer that triggers every 60 seconds to ping clients</span>
+        _pingTimer = <span class="hljs-keyword">new</span> System.Timers.Timer(<span class="hljs-number">60000</span>);
+        _pingTimer.Elapsed += OnPingTimerElapsed;
+        _pingTimer.AutoReset = <span class="hljs-literal">true</span>;
+        _pingTimer.Start();
+
+        _logger = logger;
+    }
+
+    <span class="hljs-comment">// Ping all connected clients to keep connection alive</span>
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">void</span> <span class="hljs-title">OnPingTimerElapsed</span>(<span class="hljs-params"><span class="hljs-keyword">object</span> sender, ElapsedEventArgs e</span>)</span>
+    {
+        <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">var</span> (sessionID, webSocket) <span class="hljs-keyword">in</span> _clientSockets.ToList())
+        {
+            <span class="hljs-keyword">if</span> (webSocket.State == WebSocketState.Open)
+            {
+                <span class="hljs-keyword">try</span>
+                {
+                    <span class="hljs-keyword">await</span> webSocket.SendAsync(<span class="hljs-keyword">new</span> ArraySegment&lt;<span class="hljs-keyword">byte</span>&gt;(messageBytes), 
+                        WebSocketMessageType.Text, <span class="hljs-literal">true</span>, CancellationToken.None);
+                    _logger.LogInformation(<span class="hljs-string">$"Sent ping to client <span class="hljs-subst">{sessionID}</span>"</span>);
+                }
+                <span class="hljs-keyword">catch</span> (Exception ex)
+                {
+                    _logger.LogError(<span class="hljs-string">$"Error sending ping to client <span class="hljs-subst">{sessionID}</span>: <span class="hljs-subst">{ex.Message}</span>"</span>);
+                    <span class="hljs-keyword">await</span> CloseAndRemoveWebSocket(sessionID, webSocket);
+                }
+            }
+            <span class="hljs-keyword">else</span>
+            {
+                _logger.LogInformation(<span class="hljs-string">$"WebSocket for client <span class="hljs-subst">{sessionID}</span> is not open. Closing connection."</span>);
+                <span class="hljs-keyword">await</span> CloseAndRemoveWebSocket(sessionID, webSocket);
+            }
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">AddConnectionAsync</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> sessionID, WebSocket webSocket</span>)</span>
+    {
+        _clientSockets.TryAdd(sessionID, webSocket);
+
+        <span class="hljs-keyword">try</span>
+        {
+            _logger.LogInformation(<span class="hljs-string">$"New websocket connection - AddConnectionAsync <span class="hljs-subst">{sessionID}</span>"</span>);
+            <span class="hljs-keyword">await</span> HandleConnectionAsync(sessionID, webSocket);
+        }
+        <span class="hljs-keyword">finally</span>
+        {
+            <span class="hljs-comment">// Remove the connection when it's closed</span>
+            _clientSockets.TryRemove(sessionID, <span class="hljs-keyword">out</span> _);
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">HandleConnectionAsync</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> sessionID, WebSocket webSocket</span>)</span>
+    {
+        <span class="hljs-keyword">var</span> buffer = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[<span class="hljs-number">1024</span> * <span class="hljs-number">4</span>];
+        <span class="hljs-keyword">while</span> (webSocket.State == WebSocketState.Open)
+        {
+            <span class="hljs-keyword">var</span> result = <span class="hljs-keyword">await</span> webSocket.ReceiveAsync(<span class="hljs-keyword">new</span> ArraySegment&lt;<span class="hljs-keyword">byte</span>&gt;(buffer), CancellationToken.None);
+
+            <span class="hljs-keyword">if</span> (result.MessageType == WebSocketMessageType.Text)
+            {
+                <span class="hljs-keyword">var</span> message = Encoding.UTF8.GetString(buffer, <span class="hljs-number">0</span>, result.Count);
+                _logger.LogInformation(<span class="hljs-string">$"Received message from <span class="hljs-subst">{sessionID}</span>: <span class="hljs-subst">{message}</span>"</span>);
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (result.MessageType == WebSocketMessageType.Close)
+            {
+                _logger.LogInformation(<span class="hljs-string">$"Closing websocket connection - WebSocketCloseStatus.NormalClosure - <span class="hljs-subst">{sessionID}</span>"</span>);
+                <span class="hljs-keyword">await</span> webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, <span class="hljs-string">"Closing"</span>, CancellationToken.None);
+            }
+        }
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">CloseConnectionAsync</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> sessionID</span>)</span>
+    {
+        <span class="hljs-keyword">if</span> (_clientSockets.TryGetValue(sessionID, <span class="hljs-keyword">out</span> <span class="hljs-keyword">var</span> webSocket))
+        {
+            <span class="hljs-keyword">try</span>
+            {
+                <span class="hljs-keyword">if</span> (webSocket.State != WebSocketState.Closed &amp;&amp; webSocket.State != WebSocketState.Aborted)
+                {
+                    <span class="hljs-keyword">await</span> webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, <span class="hljs-string">"Session closed by server"</span>, CancellationToken.None);
+                    _logger.LogInformation(<span class="hljs-string">$"Closed WebSocket for client <span class="hljs-subst">{sessionID}</span>"</span>);
+                }
+            }
+            <span class="hljs-keyword">catch</span> (Exception ex)
+            {
+                _logger.LogError(<span class="hljs-string">$"Error closing WebSocket for client <span class="hljs-subst">{sessionID}</span>: <span class="hljs-subst">{ex.Message}</span>"</span>);
+            }
+            <span class="hljs-keyword">finally</span>
+            {
+                _clientSockets.TryRemove(sessionID, <span class="hljs-keyword">out</span> _);
+            }
+        }
+    }
+
+    <span class="hljs-comment">// Get WebSocket by sessionID</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> WebSocket <span class="hljs-title">GetWebSocketBySessionId</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> sessionID</span>)</span>
+    {
+        <span class="hljs-keyword">if</span> (_clientSockets.TryGetValue(sessionID, <span class="hljs-keyword">out</span> <span class="hljs-keyword">var</span> webSocket))
+        {
+            <span class="hljs-keyword">return</span> webSocket;
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+    }
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li>WebSocketServer maintains a concurrent dictionary of active WebSocket connections indexed by session ID</li>
+<li>When video frames are ready, the video helper (Milestone or Dahua) retrieves the WebSocket by session ID</li>
+<li>Frames are serialized to JSON format: <code>{&quot;image&quot;: &quot;&lt;base64-encoded-jpeg&gt;&quot;, &quot;time&quot;: &quot;&lt;timestamp&gt;&quot;}</code></li>
+<li>The WebSocket sends the serialized frame data to the frontend</li>
+<li>A ping timer keeps connections alive by sending periodic ping messages</li>
+<li>Connection cleanup happens when clients disconnect or errors occur</li>
+</ul>
+<p><strong>Data Encryption</strong>: WebSocket communication typically uses WSS (WebSocket Secure) protocol in production for encrypted transmission.</p>
+<hr>
+<h3 id="step-6-frontend-frame-rendering">Step 6: Frontend Frame Rendering</h3>
+<p><strong>Description</strong>: The frontend receives WebSocket messages containing base64-encoded JPEG images and displays them in the video player component.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/playbackcameraframes_byimageframes.js</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From playbackcameraframes_byimageframes.js (WebSocket message handler)</span>
+ws.onmessage = <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> messageData = <span class="hljs-built_in">JSON</span>.parse(event.data);
+    
+    <span class="hljs-comment">// Check if message contains image frame data</span>
+    <span class="hljs-keyword">if</span> (!messageData.hasOwnProperty(<span class="hljs-string">'image'</span>) || !messageData.hasOwnProperty(<span class="hljs-string">'time'</span>)) {
+        <span class="hljs-keyword">return</span>;
+    }
+
+    <span class="hljs-comment">// Convert base64 to data URL for display</span>
+    <span class="hljs-keyword">const</span> imageUrl = <span class="hljs-string">"data:image/png;base64,"</span> + messageData.image;
+    <span class="hljs-keyword">const</span> date = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(messageData.time);
+    <span class="hljs-keyword">const</span> totalSeconds = (date.getHours() * <span class="hljs-number">3600</span>) + (date.getMinutes() * <span class="hljs-number">60</span>) + date.getSeconds();
+    currentPlayTime.current = totalSeconds; 
+
+    <span class="hljs-comment">// Update timeline slider</span>
+    setTimeRangeValue([totalSeconds, <span class="hljs-number">86399</span>]);
+    
+    <span class="hljs-comment">// Display the frame</span>
+    setMessage(imageUrl);
+}
+
+<span class="hljs-comment">// Render the video frame</span>
+<span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Box</span> <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.container}</span>&gt;</span>
+        {isLoaded &amp;&amp; !error &amp;&amp; (
+            <span class="hljs-tag">&lt;&gt;</span>
+                {message &amp;&amp; (
+                    <span class="hljs-tag">&lt;<span class="hljs-name">img</span> 
+                        <span class="hljs-attr">src</span>=<span class="hljs-string">{message}</span> 
+                        <span class="hljs-attr">className</span>=<span class="hljs-string">{classes.videoElem}</span> 
+                        <span class="hljs-attr">alt</span>=<span class="hljs-string">"Video Frame"</span>
+                    /&gt;</span>
+                )}
+            <span class="hljs-tag">&lt;/&gt;</span></span>
+        )}
+    &lt;<span class="hljs-regexp">/Box&gt;
+);
+</span></div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li>WebSocket <code>onmessage</code> handler receives JSON data containing:
+<ul>
+<li><code>image</code>: Base64-encoded JPEG image data</li>
+<li><code>time</code>: Timestamp of the frame</li>
+</ul>
+</li>
+<li>The base64 data is converted to a data URL format that can be displayed in an <code>&lt;img&gt;</code> tag</li>
+<li>The timestamp is used to update the playback timeline/slider</li>
+<li>React state update triggers re-render to display the new frame</li>
+<li>This creates the illusion of video playback through rapid sequential image display (~15 FPS)</li>
+</ul>
+<hr>
+<h3 id="step-7-stop-playback">Step 7: Stop Playback</h3>
+<p><strong>Description</strong>: When the user stops playback or closes the video player, the frontend sends a stop request and closes the WebSocket connection.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/playbackcameraframes_byimageframes.js</code>]</li>
+<li>[<code>video/MilestoneMediaServices/Controllers/MediaController.cs</code>]</li>
+<li>[<code>video/DahuaMediaServices/DahuaMediaServices/Controllers/MediaController.cs</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong> (Frontend):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From playbackcameraframes_byimageframes.js</span>
+<span class="hljs-keyword">const</span> sendPlaybackStopRequest = <span class="hljs-keyword">async</span> (cameraConfigId, sessionId) =&gt; {
+    <span class="hljs-keyword">try</span> {
+        <span class="hljs-keyword">let</span> disco = <span class="hljs-keyword">await</span> Discovery.get();
+        <span class="hljs-keyword">let</span> url = <span class="hljs-string">`<span class="hljs-subst">${disco[<span class="hljs-string">'mozart-video-api_endpoint'</span>]}</span>/stopplayback?cameraConfigId=<span class="hljs-subst">${cameraConfigId}</span>&amp;sessionId=<span class="hljs-subst">${sessionId}</span>`</span>;  
+
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> mozartApi.post(url);
+    } <span class="hljs-keyword">catch</span> (error) {
+        <span class="hljs-built_in">console</span>.error(<span class="hljs-string">"Error sending playback stop request:"</span>, error);
+        setError(error);
+    }
+}
+
+<span class="hljs-keyword">const</span> handleStopPlayback = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> { 
+    setIsPlaying(<span class="hljs-literal">false</span>);
+    setIsStopped(<span class="hljs-literal">true</span>);
+
+    <span class="hljs-keyword">if</span> (assetId &amp;&amp; playBackSessionId.current) {  
+        sendPlaybackStopRequest(assetId, playBackSessionId.current);
+        playBackSessionId.current = <span class="hljs-literal">null</span>;
+
+        <span class="hljs-keyword">if</span> (socketRef.current) {
+            socketRef.current.close();
+            setSocketStatus(<span class="hljs-string">'disconnected'</span>);
+        }
+    }
+}
+</div></code></pre>
+<p><strong>Code Snippet</strong> (Backend - Milestone):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From MilestoneMediaServices MediaController.cs</span>
+[<span class="hljs-meta">HttpPost(<span class="hljs-meta-string">"stopplayback/{sessionId}"</span>)</span>]
+<span class="hljs-function"><span class="hljs-keyword">public</span> Task&lt;IActionResult&gt; <span class="hljs-title">Stopplayback</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> sessionId</span>)</span>
+{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">string</span>.IsNullOrEmpty(sessionId)) <span class="hljs-keyword">return</span> Task.FromResult&lt;IActionResult&gt;(Ok());
+
+    _logger.LogInformation(<span class="hljs-string">$"stopplayback - sessionid=<span class="hljs-subst">{sessionId}</span>"</span>);
+
+    _milestoneHelper.CloseVideo(sessionId);
+
+    _webSocketServer.CloseConnectionAsync(sessionId);
+
+    <span class="hljs-keyword">return</span> Task.FromResult&lt;IActionResult&gt;(Ok());
+}
+</div></code></pre>
+<p><strong>Code Snippet</strong> (Backend - Dahua):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From DahuaMediaServices MediaController.cs</span>
+[<span class="hljs-meta">HttpPost(<span class="hljs-meta-string">"stopplayback/{sessionId}"</span>)</span>]
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">Stopplayback</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> sessionId</span>)</span>
+{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">string</span>.IsNullOrEmpty(sessionId))
+    {
+        <span class="hljs-keyword">return</span> BadRequest(<span class="hljs-keyword">new</span> { error = <span class="hljs-string">"SessionId is required"</span> });
+    }
+
+    _logger.LogInformation(<span class="hljs-string">$"stopplayback - sessionid=<span class="hljs-subst">{sessionId}</span>"</span>);
+
+    <span class="hljs-keyword">await</span> _dahuaHelper.CloseVideo(sessionId);
+
+    <span class="hljs-keyword">await</span> _webSocketServer.CloseConnectionAsync(sessionId);
+
+    <span class="hljs-keyword">return</span> Ok();
+}
+
+<span class="hljs-comment">// From DahuaHelper.cs</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task <span class="hljs-title">CloseVideo</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> sessionId</span>)</span>
+{
+    <span class="hljs-keyword">await</span> StopVideo(sessionId);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;<span class="hljs-keyword">bool</span>&gt; <span class="hljs-title">StopVideo</span>(<span class="hljs-params"><span class="hljs-keyword">string</span> sessionId</span>)</span>
+{
+    <span class="hljs-keyword">try</span>
+    {
+        RtspToFrameConverter converter = <span class="hljs-literal">null</span>;
+
+        <span class="hljs-keyword">lock</span> (_lockObject)
+        {
+            <span class="hljs-keyword">if</span> (_activeConverters.TryGetValue(sessionId, <span class="hljs-keyword">out</span> converter))
+            {
+                _activeConverters.Remove(sessionId);
+            }
+            _lastSentFrameDateTime.Remove(sessionId);
+            _initDateTime.Remove(sessionId);
+        }
+
+        <span class="hljs-keyword">if</span> (converter != <span class="hljs-literal">null</span>)
+        {
+            _logger.LogInformation(<span class="hljs-string">$"Stopping video for session <span class="hljs-subst">{sessionId}</span>"</span>);
+
+            <span class="hljs-comment">// Unsubscribe from events</span>
+            converter.NewFrame -= <span class="hljs-keyword">async</span> (frame, sid) =&gt; <span class="hljs-keyword">await</span> OnNewFrame(frame, sid);
+            converter.StreamEnded -= (sid, reason) =&gt; OnStreamEnded(sid, reason);
+
+            converter.Stop();  <span class="hljs-comment">// Stops FFmpeg process for Dahua</span>
+            converter.Dispose();
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+        }
+
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+    <span class="hljs-keyword">catch</span> (Exception ex)
+    {
+        _logger.LogError(ex, <span class="hljs-string">$"Error stopping video for session <span class="hljs-subst">{sessionId}</span>"</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li>Frontend sends HTTP POST to <code>/stopplayback/{sessionId}</code> endpoint</li>
+<li>Backend cleanup process:
+<ol>
+<li>Milestone: Closes connection to Milestone Mobile Server</li>
+<li>Dahua: Stops FFmpeg process and releases resources</li>
+<li>Both: Close and remove the WebSocket connection from the dictionary</li>
+<li>Clean up all session-specific resources</li>
+</ol>
+</li>
+<li>Frontend closes its WebSocket connection and updates UI state</li>
+</ul>
+<hr>
+<h2 id="external-playback-use-cases">External Playback: Use Cases</h2>
+<h3 id="use-case-1-date-selection-for-external-playback">Use Case 1: Date Selection for External Playback</h3>
+<p><strong>Description</strong>: Users can select a specific date to view historical camera footage from that day.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/playbackcameraframes_byimageframes.js</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From playbackcameraframes_byimageframes.js</span>
+<span class="hljs-keyword">const</span> [startDate, setStartDate] = useState(moment().format(<span class="hljs-string">'YYYY-MM-DD'</span>));
+<span class="hljs-keyword">const</span> [startSecond, setStartSecond] = useState(<span class="hljs-number">0</span>);
+<span class="hljs-keyword">const</span> [timeRangeValue, setTimeRangeValue] = useState([<span class="hljs-number">0</span>, <span class="hljs-number">86399</span>]); <span class="hljs-comment">// 0 to 86399 seconds (24 hours)</span>
+
+<span class="hljs-keyword">const</span> handleDateFromChange = <span class="hljs-function"><span class="hljs-params">event</span> =&gt;</span> { 
+    setStartDate(event.target.value);
+}
+
+<span class="hljs-comment">// When play is initiated</span>
+<span class="hljs-keyword">const</span> handleRefreshPlayback = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    setIsPlaying(<span class="hljs-literal">true</span>);
+    setIsStopped(<span class="hljs-literal">false</span>);
+    
+    <span class="hljs-comment">// Combine selected date with timeline position to get exact timestamp</span>
+    <span class="hljs-keyword">let</span> time = moment(startDate).add(startSecond, <span class="hljs-string">'seconds'</span>).format(<span class="hljs-string">'YYYY-MM-DD HH:mm'</span>);
+
+    <span class="hljs-keyword">if</span> (socketStatus == <span class="hljs-string">"disconnected"</span>) { 
+        <span class="hljs-keyword">if</span> (assetId == <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">return</span>;
+        }
+        connectWebSocket();
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (assetId) {
+        sendPlaybackRequest(time, playBackSessionId.current, assetId);
+    }
+}
+
+<span class="hljs-comment">// UI Component</span>
+&lt;TextField 
+    type=<span class="hljs-string">"date"</span>
+    value={startDate}
+    onChange={handleDateFromChange}
+    inputProps={{
+        <span class="hljs-attr">max</span>: moment().format(<span class="hljs-string">'YYYY-MM-DD'</span>) <span class="hljs-comment">// Prevent future dates</span>
+    }}
+/&gt;
+</div></code></pre>
+<p><strong>User Flow</strong>:</p>
+<ol>
+<li>User opens the playback page</li>
+<li>User clicks on the date picker control</li>
+<li>User selects a specific date from the calendar</li>
+<li>The selected date is stored in <code>startDate</code> state</li>
+<li>When playback starts, the system combines the date with the timeline position to request video from that specific date and time</li>
+</ol>
+<p><strong>Technical Notes</strong>:</p>
+<ul>
+<li>Date is stored in <code>YYYY-MM-DD</code> format using moment.js</li>
+<li>Maximum selectable date is today (prevents future dates)</li>
+<li>Date selection works in conjunction with the timeline slider to determine exact playback timestamp</li>
+</ul>
+<hr>
+<h3 id="use-case-2-timeline-navigation">Use Case 2: Timeline Navigation</h3>
+<p><strong>Description</strong>: Users can drag a timeline slider to navigate to specific times within the selected day's footage. The timeline represents a 24-hour period (86,399 seconds).</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/playbackcameraframes_byimageframes.js</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From playbackcameraframes_byimageframes.js</span>
+<span class="hljs-keyword">const</span> [timeRangeValue, setTimeRangeValue] = useState([<span class="hljs-number">0</span>, <span class="hljs-number">86399</span>]); <span class="hljs-comment">// Start and end in seconds</span>
+<span class="hljs-keyword">const</span> [currentPos, setCurrentPos] = useState(<span class="hljs-number">0</span>);
+<span class="hljs-keyword">const</span> currentPlayTime = useRef(<span class="hljs-number">0</span>);
+
+<span class="hljs-keyword">const</span> time_convert = <span class="hljs-function">(<span class="hljs-params">value</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> hours = <span class="hljs-built_in">Math</span>.floor(value / <span class="hljs-number">3600</span>);
+    <span class="hljs-keyword">const</span> minutes = <span class="hljs-built_in">Math</span>.floor((value % <span class="hljs-number">3600</span>) / <span class="hljs-number">60</span>);
+    <span class="hljs-keyword">const</span> seconds = value % <span class="hljs-number">60</span>;
+
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-built_in">String</span>(hours).padStart(<span class="hljs-number">2</span>, <span class="hljs-string">'0'</span>)}</span>:<span class="hljs-subst">${<span class="hljs-built_in">String</span>(minutes).padStart(<span class="hljs-number">2</span>, <span class="hljs-string">'0'</span>)}</span>:<span class="hljs-subst">${<span class="hljs-built_in">String</span>(seconds).padStart(<span class="hljs-number">2</span>, <span class="hljs-string">'0'</span>)}</span>`</span>;
+}
+
+<span class="hljs-keyword">const</span> timeChangeHandler = <span class="hljs-function">(<span class="hljs-params">event, newValue</span>) =&gt;</span> { 
+    setTimeRangeValue(newValue);
+    setStartSecond(newValue[<span class="hljs-number">0</span>]); 
+}
+
+<span class="hljs-keyword">const</span> handleSliderChange = <span class="hljs-function">(<span class="hljs-params">event, newValue</span>) =&gt;</span> { 
+    handleStopPlayback(); <span class="hljs-comment">// Stop current playback before seeking</span>
+    
+    <span class="hljs-keyword">const</span> currentTime = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();
+    <span class="hljs-keyword">const</span> currentSecond = currentTime.getHours() * <span class="hljs-number">3600</span> + currentTime.getMinutes() * <span class="hljs-number">60</span> + currentTime.getSeconds();
+
+    <span class="hljs-comment">// Determine if the end time is being changed</span>
+    <span class="hljs-keyword">const</span> endChanging = newValue[<span class="hljs-number">1</span>] !== timeRangeValue[<span class="hljs-number">1</span>];
+
+    <span class="hljs-keyword">if</span> (endChanging) {
+        <span class="hljs-comment">// Prevent changes to the end time</span>
+        setTimeRangeValue([timeRangeValue[<span class="hljs-number">0</span>], timeRangeValue[<span class="hljs-number">1</span>]]);
+        <span class="hljs-keyword">return</span>;
+    }
+
+    <span class="hljs-comment">// Prevent start time from being set to a value beyond the current time if it's today's date</span>
+    <span class="hljs-keyword">if</span> (startDate === moment().format(<span class="hljs-string">'YYYY-MM-DD'</span>)) {
+        <span class="hljs-keyword">if</span> (newValue[<span class="hljs-number">0</span>] &gt;= currentSecond) {
+            <span class="hljs-keyword">return</span>;
+        }
+    }
+
+    <span class="hljs-comment">// Update state with the new values</span>
+    timeChangeHandler(event, newValue);
+
+    <span class="hljs-comment">// Calculate the position as a percentage based on the new values</span>
+    setCurrentPos(((newValue[<span class="hljs-number">0</span>] + newValue[<span class="hljs-number">1</span>]) / <span class="hljs-number">2</span> / <span class="hljs-number">86399</span>) * <span class="hljs-number">100</span>);
+}
+
+<span class="hljs-comment">// When frames are received, update timeline position</span>
+ws.onmessage = <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> messageData = <span class="hljs-built_in">JSON</span>.parse(event.data);
+    
+    <span class="hljs-keyword">if</span> (!messageData.hasOwnProperty(<span class="hljs-string">'image'</span>) || !messageData.hasOwnProperty(<span class="hljs-string">'time'</span>)) {
+        <span class="hljs-keyword">return</span>;
+    }
+
+    <span class="hljs-keyword">const</span> imageUrl = <span class="hljs-string">"data:image/png;base64,"</span> + messageData.image;
+    <span class="hljs-keyword">const</span> date = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(messageData.time);
+    
+    <span class="hljs-comment">// Convert timestamp to seconds since midnight</span>
+    <span class="hljs-keyword">const</span> totalSeconds = (date.getHours() * <span class="hljs-number">3600</span>) + (date.getMinutes() * <span class="hljs-number">60</span>) + date.getSeconds();
+    currentPlayTime.current = totalSeconds; 
+
+    <span class="hljs-comment">// Update timeline slider to show current position</span>
+    setTimeRangeValue([totalSeconds, <span class="hljs-number">86399</span>]);
+    
+    setMessage(imageUrl);
+}
+
+<span class="hljs-comment">// UI Component - Timeline Slider</span>
+&lt;Slider
+    value={timeRangeValue}
+    onChange={handleSliderChange}
+    min={<span class="hljs-number">0</span>}
+    max={<span class="hljs-number">86399</span>}
+    valueLabelDisplay=<span class="hljs-string">"auto"</span>
+    valueLabelFormat={time_convert}
+    marks={[
+        { <span class="hljs-attr">value</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">label</span>: <span class="hljs-string">'00:00'</span> },
+        { <span class="hljs-attr">value</span>: <span class="hljs-number">21600</span>, <span class="hljs-attr">label</span>: <span class="hljs-string">'06:00'</span> },
+        { <span class="hljs-attr">value</span>: <span class="hljs-number">43200</span>, <span class="hljs-attr">label</span>: <span class="hljs-string">'12:00'</span> },
+        { <span class="hljs-attr">value</span>: <span class="hljs-number">64800</span>, <span class="hljs-attr">label</span>: <span class="hljs-string">'18:00'</span> },
+        { <span class="hljs-attr">value</span>: <span class="hljs-number">86399</span>, <span class="hljs-attr">label</span>: <span class="hljs-string">'23:59'</span> }
+    ]}
+/&gt;
+</div></code></pre>
+<p><strong>User Flow</strong>:</p>
+<ol>
+<li>User sees a timeline slider representing 24 hours (00:00 to 23:59)</li>
+<li>User drags the slider handle to a specific time position</li>
+<li>Current playback stops automatically</li>
+<li>System validates the selected time (cannot select future times for today's date)</li>
+<li>User clicks play to start playback from the selected position</li>
+<li>As video plays, the slider updates in real-time to show current playback position</li>
+</ol>
+<p><strong>Technical Notes</strong>:</p>
+<ul>
+<li>Timeline uses seconds since midnight (0 to 86,399 representing 00:00:00 to 23:59:59)</li>
+<li><code>time_convert</code> function converts seconds to HH:MM:SS format for display</li>
+<li>Red line indicator shows current playback position</li>
+<li>For current day, users cannot seek beyond the current time</li>
+<li>Slider automatically updates as frames are received during playback</li>
+<li>End time handle is locked to prevent modification (playback always ends at 23:59:59)</li>
+</ul>
+<hr>
+<h3 id="use-case-3-playback-speed-control">Use Case 3: Playback Speed Control</h3>
+<p><strong>Description</strong>: Users can adjust the video playback speed from 1x (normal) to 4x (fast forward) to quickly review footage.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/playbackcameraframes_byimageframes.js</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From playbackcameraframes_byimageframes.js</span>
+<span class="hljs-keyword">const</span> [playSpeed, setPlaySpeed] = useState(<span class="hljs-number">1</span>); <span class="hljs-comment">// Default speed is 1x</span>
+
+<span class="hljs-keyword">const</span> handleChange = <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+    <span class="hljs-keyword">if</span> (playSpeed != event.target.value) {
+        setPlaySpeed(event.target.value);
+    }
+};
+
+<span class="hljs-keyword">const</span> sendPlaybackRequest = <span class="hljs-keyword">async</span> (time, sessionId, id,) =&gt; { 
+    <span class="hljs-keyword">let</span> disco = <span class="hljs-keyword">await</span> Discovery.get();
+    <span class="hljs-keyword">let</span> url = <span class="hljs-string">`<span class="hljs-subst">${disco[<span class="hljs-string">'mozart-video-api_endpoint'</span>]}</span>/startplayback`</span>;
+
+    <span class="hljs-keyword">let</span> obj = {
+        <span class="hljs-attr">SessionId</span>: sessionId,
+        <span class="hljs-attr">CameraConfigId</span>: id,
+        <span class="hljs-attr">StartTime</span>: time,  
+        <span class="hljs-attr">EndTime</span>: time,  
+        <span class="hljs-attr">Width</span>: <span class="hljs-number">1920</span>,  
+        <span class="hljs-attr">Height</span>: <span class="hljs-number">1080</span>,  
+        <span class="hljs-attr">Speed</span>: playSpeed  <span class="hljs-comment">// Include selected speed in request</span>
+    };
+
+    <span class="hljs-keyword">return</span> mozartApi.post(url, obj);
+};
+
+<span class="hljs-comment">// UI Component - Speed Selection Dropdown</span>
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Select</span>
+    <span class="hljs-attr">value</span>=<span class="hljs-string">{playSpeed}</span>
+    <span class="hljs-attr">onChange</span>=<span class="hljs-string">{handleChange}</span>
+    <span class="hljs-attr">displayEmpty</span>
+    <span class="hljs-attr">inputProps</span>=<span class="hljs-string">{{</span> '<span class="hljs-attr">aria-label</span>'<span class="hljs-attr">:</span> '<span class="hljs-attr">Playback</span> <span class="hljs-attr">Speed</span>' }}
+&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">MenuItem</span> <span class="hljs-attr">value</span>=<span class="hljs-string">{1}</span>&gt;</span>1x (Normal)<span class="hljs-tag">&lt;/<span class="hljs-name">MenuItem</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">MenuItem</span> <span class="hljs-attr">value</span>=<span class="hljs-string">{2}</span>&gt;</span>2x (Fast)<span class="hljs-tag">&lt;/<span class="hljs-name">MenuItem</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">MenuItem</span> <span class="hljs-attr">value</span>=<span class="hljs-string">{3}</span>&gt;</span>3x (Faster)<span class="hljs-tag">&lt;/<span class="hljs-name">MenuItem</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">MenuItem</span> <span class="hljs-attr">value</span>=<span class="hljs-string">{4}</span>&gt;</span>4x (Fastest)<span class="hljs-tag">&lt;/<span class="hljs-name">MenuItem</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">Select</span>&gt;</span></span>
+</div></code></pre>
+<p><strong>Backend Processing</strong> (Both Milestone and Dahua):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From MediaController.cs (both services)</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">PlaybackInput</span>
+{
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> SessionId { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> CameraConfigId { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">string</span> ExternalCameraRef { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> DateTime StartTime { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> DateTime EndTime { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; }
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Width { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; } = <span class="hljs-number">800</span>;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Height { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; } = <span class="hljs-number">600</span>;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> Speed { <span class="hljs-keyword">get</span>; <span class="hljs-keyword">set</span>; } = <span class="hljs-number">1</span>;  <span class="hljs-comment">// Speed multiplier (1-4)</span>
+}
+</div></code></pre>
+<p><strong>User Flow</strong>:</p>
+<ol>
+<li>User selects desired playback date and time position</li>
+<li>User clicks on the speed dropdown selector (default shows &quot;1x&quot;)</li>
+<li>User selects desired speed: 1x, 2x, 3x, or 4x</li>
+<li>If video is already playing, the speed change takes effect on the next playback request</li>
+<li>Backend adjusts frame serving rate according to the selected speed multiplier</li>
+<li>Video playback accelerates - at 4x speed, users can review 4 minutes of footage in 1 minute</li>
+</ol>
+<p><strong>Technical Notes</strong>:</p>
+<ul>
+<li>Speed parameter is included in the <code>PlaybackInput</code> object sent to backend services</li>
+<li>Speed values: <code>1</code> (normal), <code>2</code> (double speed), <code>3</code> (triple speed), <code>4</code> (quadruple speed)</li>
+<li>Backend services adjust frame timing based on the speed multiplier</li>
+<li>For Milestone: SDK controls playback speed through Mobile Server API</li>
+<li>For Dahua: FFmpeg frame rate and timestamp calculations are adjusted</li>
+<li>Higher speeds may result in some frame dropping to maintain smooth playback</li>
+<li>Network bandwidth requirements remain similar (same frame size, just different timing)</li>
+</ul>
+<p><strong>Combined Use Case Example</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// User workflow combining all three features:</span>
+
+<span class="hljs-comment">// 1. Select date</span>
+setStartDate(<span class="hljs-string">'2025-12-15'</span>); <span class="hljs-comment">// Select December 15, 2025</span>
+
+<span class="hljs-comment">// 2. Drag timeline to 2:30 PM (52200 seconds since midnight)</span>
+setTimeRangeValue([<span class="hljs-number">52200</span>, <span class="hljs-number">86399</span>]);
+setStartSecond(<span class="hljs-number">52200</span>);
+
+<span class="hljs-comment">// 3. Set speed to 2x</span>
+setPlaySpeed(<span class="hljs-number">2</span>);
+
+<span class="hljs-comment">// 4. Start playback</span>
+handleRefreshPlayback(); <span class="hljs-comment">// Plays from Dec 15, 2025 at 14:30:00 at 2x speed</span>
+
+<span class="hljs-comment">// Resulting playback request:</span>
+{
+    <span class="hljs-attr">SessionId</span>: <span class="hljs-string">"guid-here"</span>,
+    <span class="hljs-attr">CameraConfigId</span>: <span class="hljs-number">123</span>,
+    <span class="hljs-attr">StartTime</span>: <span class="hljs-string">"2025-12-15 14:30"</span>, <span class="hljs-comment">// Date + Timeline position</span>
+    <span class="hljs-attr">EndTime</span>: <span class="hljs-string">"2025-12-15 14:30"</span>,
+    <span class="hljs-attr">Width</span>: <span class="hljs-number">1920</span>,
+    <span class="hljs-attr">Height</span>: <span class="hljs-number">1080</span>,
+    <span class="hljs-attr">Speed</span>: <span class="hljs-number">2</span> <span class="hljs-comment">// 2x playback speed</span>
+}
+</div></code></pre>
+<hr>
+<h2 id="feature-3-external-playback-user-initiated-historical-playback">Feature 3: External Playback (User-Initiated Historical Playback)</h2>
+<h3 id="overview">Overview</h3>
+<p>External Playback allows users to view historical camera footage on-demand with full timeline controls. Users can select specific dates, navigate through 24-hour timelines, and control playback speed. This feature is used for detailed incident investigation and evidence gathering.</p>
+<p><strong>Key Characteristics</strong>:</p>
+<ul>
+<li><strong>User-initiated</strong>: Started by user action on playback page</li>
+<li><strong>Flexible duration</strong>: User selects date and time range</li>
+<li><strong>Real-time streaming</strong>: Video frames streamed via WebSocket</li>
+<li><strong>Timeline controls</strong>: Seek, pause, resume, speed control</li>
+<li><strong>Single camera</strong>: One camera at a time per player</li>
+<li><strong>On-demand</strong>: Video retrieved from VMS only when requested</li>
+</ul>
+<p><strong>Technology</strong>:</p>
+<ul>
+<li>WebSocket for frame streaming</li>
+<li>Session-based connections (unique session ID per stream)</li>
+<li>Frame-by-frame transmission (JPEG images as base64)</li>
+<li>~15 FPS for smooth playback</li>
+</ul>
+<p><strong>Frontend Page</strong>:</p>
+<ul>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/pages/video/playback.js</code>]</li>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/playbackcameraframes_byimageframes.js</code>]</li>
+</ul>
+<hr>
+<h3 id="external-playback-step-by-step-processing-flow">External Playback: Step-by-Step Processing Flow</h3>
+<h4 id="step-1-frontend-initialization-and-camera-configuration-discovery">Step 1: Frontend Initialization and Camera Configuration Discovery</h4>
+<p><strong>Description</strong>: When a user accesses the External Playback page, the frontend component loads camera configuration from the core API and determines which video controller to use.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>CMS API publishes to: <code>*.cms.case.created</code> topic on <code>CONST.MQ_TOPIC_EXCHANGE</code></li>
+</ul>
+<p><strong>Message Data</strong>:</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"Id"</span>: <span class="hljs-number">12345</span>,
+  <span class="hljs-attr">"Timestamp"</span>: <span class="hljs-string">"2026-01-13T14:30:00Z"</span>,
+  <span class="hljs-attr">"EquipmentTag"</span>: <span class="hljs-string">"CAM-001"</span>,
+  <span class="hljs-attr">"DeviceData"</span>: <span class="hljs-string">"{...}"</span>,
+  <span class="hljs-attr">"CaseNo"</span>: <span class="hljs-string">"CASE-2026-001"</span>
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li>The message contains case details including the event timestamp and equipment tag</li>
+<li>The timestamp is used to determine the time range for footage capture</li>
+<li>EquipmentTag identifies which equipment triggered the case</li>
+</ul>
+<hr>
+<h4 id="step-2-footageservice-receives-message">Step 2: FootageService Receives Message</h4>
+<p><strong>Description</strong>: The FootageService (running in MqProcSvc) listens for case creation messages and initiates the automatic footage generation process.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>mqprocsvc/src/MqProcSvc/Footage/FootageService.cs</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From FootageService.cs</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title">FootageService</span> : <span class="hljs-title">IHostedService</span>, <span class="hljs-title">IDisposable</span> {
+    <span class="hljs-keyword">readonly</span> MqSubscriber _mqSubscriber;
+    
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">FootageService</span>(<span class="hljs-params">IConfiguration config</span>)</span> {
+        MqConfig mqCfg = <span class="hljs-keyword">new</span> MqConfig();
+        config.Bind(<span class="hljs-string">"RabbitMq"</span>, mqCfg);
+        
+        <span class="hljs-comment">// Subscribe to case.created messages</span>
+        _mqSubscriber = MqSubscriber.CreateTopicSubscriber(
+            mqCfg, 
+            <span class="hljs-string">"*.cms.case.created"</span>, 
+            CONST.MQ_TOPIC_EXCHANGE, 
+            <span class="hljs-string">$"<span class="hljs-subst">{Util.GetRequiredAppSetting(<span class="hljs-string">"App:Id"</span>)}</span>-<span class="hljs-subst">{_serviceName}</span>"</span>
+        );
+        
+        _mqSubscriber.OnMessageReceived += _mqSubscriber_OnMessageReceived;
+    }
+    
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> <span class="hljs-keyword">void</span> _mqSubscriber_OnMessageReceived(<span class="hljs-keyword">string</span> routingKey, <span class="hljs-keyword">string</span> jsonData) {
+        JObject caseObj = JObject.Parse(jsonData);
+        <span class="hljs-keyword">long</span> caseId = caseObj.Value&lt;<span class="hljs-keyword">long</span>&gt;(<span class="hljs-string">"Id"</span>);
+        <span class="hljs-keyword">string</span> equipmentTag = caseObj.Value&lt;<span class="hljs-keyword">string</span>&gt;(<span class="hljs-string">"EquipmentTag"</span>);
+        
+        <span class="hljs-keyword">string</span> timestampString = caseObj.Value&lt;<span class="hljs-keyword">string</span>&gt;(<span class="hljs-string">"Timestamp"</span>);
+        DateTime.TryParse(timestampString, <span class="hljs-keyword">out</span> DateTime timestamp);
+        <span class="hljs-keyword">string</span>? ticks = (timestamp != DateTime.MinValue) ? timestamp.Ticks.ToString() : <span class="hljs-literal">null</span>;
+        
+        <span class="hljs-comment">// Process footage generation...</span>
+    }
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li>FootageService runs as a background hosted service in MqProcSvc</li>
+<li>Subscribes to <code>*.cms.case.created</code> topic pattern (matches all tenants)</li>
+<li>Extracts case details from the message</li>
+<li>Converts timestamp to ticks for precise time reference</li>
+</ul>
+<hr>
+<h4 id="step-3-identify-related-cameras">Step 3: Identify Related Cameras</h4>
+<p><strong>Description</strong>: The service identifies which cameras should have footage captured based on the equipment tag from the case.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>mqprocsvc/src/MqProcSvc/Footage/FootageService.cs</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From FootageService.cs</span>
+<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">string</span>.IsNullOrWhiteSpace(equipmentTag)) {
+    AssetViewModel asset = (<span class="hljs-keyword">await</span> MozartUtil.GetAssetsAsync(tenantId))
+        .FirstOrDefault(x =&gt; <span class="hljs-keyword">string</span>.Equals(x.EquipmentTag, equipmentTag, StringComparison.OrdinalIgnoreCase));
+    
+    <span class="hljs-keyword">if</span> (asset != <span class="hljs-literal">null</span>) {
+        HashSet&lt;<span class="hljs-keyword">int</span>&gt; cctvIds = <span class="hljs-keyword">new</span> HashSet&lt;<span class="hljs-keyword">int</span>&gt;();
+        
+        AssetCategoryViewModel assetCategory = (<span class="hljs-keyword">await</span> MozartUtil.GetAssetCategoriesAsync(tenantId))
+            .FirstOrDefault(x =&gt; x.Id == asset.AssetCategoryId);
+        
+        <span class="hljs-comment">// Add self if camera</span>
+        <span class="hljs-keyword">if</span> (assetCategory?.AssetCategoryCode == CoreLib.CONST.ASSETCATEGORYCODE.CCTV) {
+            cctvIds.Add(asset.Id);
+        }
+        
+        <span class="hljs-comment">// Add all other closest cameras</span>
+        <span class="hljs-keyword">if</span> (asset.ClosestCameras?.Length &gt; <span class="hljs-number">0</span>) {
+            <span class="hljs-keyword">foreach</span> (AssetViewModel.ClosestCamera thisCamera <span class="hljs-keyword">in</span> asset.ClosestCameras) {
+                cctvIds.Add(thisCamera.CameraId);
+            }
+        }
+        
+        Serilog.Log.Information(<span class="hljs-string">$"Found a total of <span class="hljs-subst">{cctvIds.Count}</span>(s) CCTVs."</span>);
+    }
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li>Looks up the asset by equipment tag</li>
+<li>Checks if the asset itself is a CCTV (camera)</li>
+<li>Retrieves all &quot;closest cameras&quot; configured for that asset/location</li>
+<li>Collects all camera IDs into a set for processing</li>
+<li>This enables multi-camera capture for comprehensive incident documentation</li>
+</ul>
+<hr>
+<h4 id="step-4-request-footage-generation-for-each-camera">Step 4: Request Footage Generation for Each Camera</h4>
+<p><strong>Description</strong>: For each identified camera, the service makes an HTTP POST request to the Video API to generate footage and snapshot.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>mqprocsvc/src/MqProcSvc/Footage/FootageService.cs</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From FootageService.cs</span>
+<span class="hljs-keyword">if</span> (cctvIds.Count &gt; <span class="hljs-number">0</span>) {
+    List&lt;Task&lt;<span class="hljs-keyword">string</span>&gt;&gt; allSnapshotFootageRequests = <span class="hljs-keyword">new</span> List&lt;Task&lt;<span class="hljs-keyword">string</span>&gt;&gt;();
+    
+    <span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">int</span> cameraId <span class="hljs-keyword">in</span> cctvIds) {
+        <span class="hljs-comment">// POST to /assets/{cameraId}/footagesnapshot/{ticks}</span>
+        MozartApiRequest snapshotFootageRequest = <span class="hljs-keyword">new</span> MozartApiRequest(
+            tenantId, 
+            Url.Combine(disco.video_endpoint, <span class="hljs-string">"assets"</span>, cameraId.ToString(), <span class="hljs-string">"footagesnapshot"</span>, ticks)
+        );
+        
+        allSnapshotFootageRequests.Add(snapshotFootageRequest.PostAsync().ReceiveString());
+        
+        Serilog.Log.Information(<span class="hljs-string">"Footage Snapshot Request Camera Id: "</span> + cameraId.ToString());
+    }
+    
+    <span class="hljs-comment">// Execute all requests in parallel</span>
+    <span class="hljs-keyword">string</span>[] results = <span class="hljs-keyword">await</span> Task.WhenAll(allSnapshotFootageRequests);
+    results = results.Where(x =&gt; !<span class="hljs-keyword">string</span>.IsNullOrEmpty(x)).ToArray();
+    
+    snapshotFilenames.AddRange(results);
+    footageFilenames.AddRange(results);
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li>Creates parallel HTTP POST requests for all cameras</li>
+<li>Endpoint: <code>/assets/{cameraId}/footagesnapshot/{ticks}</code></li>
+<li>The <code>ticks</code> parameter specifies the exact event time</li>
+<li>Executes all requests concurrently for efficiency</li>
+<li>Returns filenames of generated footage/snapshots</li>
+</ul>
+<hr>
+<h4 id="step-5-video-api-routes-request-to-recorder">Step 5: Video API Routes Request to Recorder</h4>
+<p><strong>Description</strong>: The Video API receives the footage generation request, looks up camera configuration, and routes the request to the appropriate video recorder service.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>video/src/VideoApi/Controllers/DataController.cs</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From VideoApi DataController.cs</span>
+[<span class="hljs-meta">HttpPost(<span class="hljs-meta-string">"assets/{assetId}/footagesnapshot/{timeticks?}"</span>)</span>]
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">Asset_GenerateFootageSnapshot</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> assetId, <span class="hljs-keyword">long</span>? timeticks = <span class="hljs-literal">null</span></span>)</span> {
+    <span class="hljs-keyword">var</span> cameraConfig = Get_CameraConfig_By_AssetId(assetId);
+    <span class="hljs-keyword">if</span> (cameraConfig == <span class="hljs-literal">null</span>)
+        <span class="hljs-keyword">return</span> NotFound();
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> GenerateFootageSnapshot(cameraConfig.Id, timeticks);
+}
+
+[<span class="hljs-meta">HttpPost(<span class="hljs-meta-string">"cameraconfigs/{cameraconfigid}/footagesnapshot/{timeticks?}"</span>)</span>]
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">GenerateFootageSnapshot</span>(<span class="hljs-params"><span class="hljs-keyword">int</span> cameraconfigid, <span class="hljs-keyword">long</span>? timeticks = <span class="hljs-literal">null</span></span>)</span> {
+    <span class="hljs-keyword">var</span> model = Get_CameraConfig(cameraconfigid);
+    
+    <span class="hljs-comment">// Get snapshot controller configuration</span>
+    <span class="hljs-keyword">var</span> snapshotController = _dbContext.CacheGet&lt;SnapshotController&gt;()
+        .FirstOrDefault(x =&gt; x.Id == model.SnapshotControllerId.Value);
+    
+    <span class="hljs-comment">// Determine camera reference ID based on VMS type</span>
+    <span class="hljs-keyword">string</span> cameraReferenceId = <span class="hljs-string">""</span>;
+    <span class="hljs-keyword">switch</span> (snapshotController.ControllerName) {
+        <span class="hljs-keyword">case</span> SnapshotControllerName.Milestone:
+            exReference = model.ExternalReference?
+                .Where(x =&gt; x.Source != <span class="hljs-literal">null</span> &amp;&amp; x.Source.Value == (<span class="hljs-keyword">int</span>)ExternalSource.Milestone)
+                .FirstOrDefault();
+            <span class="hljs-keyword">if</span> (exReference != <span class="hljs-literal">null</span> &amp;&amp; !<span class="hljs-keyword">string</span>.IsNullOrEmpty(exReference.Reference)) {
+                cameraReferenceId = exReference.Reference;
+            }
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> SnapshotControllerName.Dahua:
+            <span class="hljs-comment">// Similar logic for Dahua</span>
+            <span class="hljs-keyword">break</span>;
+        <span class="hljs-comment">// ... other VMS types</span>
+    }
+    
+    timeticks ??= DateTime.Now.Ticks;
+    <span class="hljs-keyword">var</span> fileName = <span class="hljs-string">$"<span class="hljs-subst">{cameraconfigid}</span>_<span class="hljs-subst">{rNumber}</span>_<span class="hljs-subst">{timeticks}</span>"</span>;
+    <span class="hljs-keyword">var</span> footageFileName = <span class="hljs-string">$"footage_<span class="hljs-subst">{cameraconfigid}</span>_<span class="hljs-subst">{rNumber}</span>_<span class="hljs-subst">{timeticks}</span>"</span>;
+    <span class="hljs-keyword">var</span> snapshotFileName = <span class="hljs-string">$"snapshot_<span class="hljs-subst">{cameraconfigid}</span>_<span class="hljs-subst">{rNumber}</span>_<span class="hljs-subst">{timeticks}</span>"</span>;
+    
+    <span class="hljs-comment">// Save to database</span>
+    <span class="hljs-keyword">var</span> snapshotModel = <span class="hljs-keyword">new</span> Snapshot() {
+        ControllerId = model.SnapshotControllerId.Value,
+        FileName = footageFileName,
+        CreatedOn = <span class="hljs-keyword">new</span> DateTime(timeticks.Value)
+    };
+    _dbContext.Update(snapshotModel);
+    <span class="hljs-keyword">await</span> _dbContext.SaveChangesAsync();
+    
+    <span class="hljs-comment">// Forward to recorder service</span>
+    <span class="hljs-keyword">var</span> recorderUrl = Flurl.Url.Combine(
+        snapshotController.RecorderUrl, 
+        cameraReferenceId, 
+        snapshotController.ControllerName.ToString(), 
+        footageFileName, 
+        snapshotFileName, 
+        timeticks.Value.ToString(), 
+        <span class="hljs-string">"footagesnapshot"</span>
+    );
+    <span class="hljs-keyword">await</span> recorderUrl.PostAsync();
+    
+    <span class="hljs-keyword">return</span> Ok(fileName);
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li>Converts asset ID to camera config ID</li>
+<li>Retrieves camera configuration including VMS controller settings</li>
+<li>Maps internal camera ID to external VMS camera reference</li>
+<li>Generates unique filenames for footage and snapshot</li>
+<li>Creates database records for tracking</li>
+<li>Forwards request to the appropriate recorder service (MedianVideoApi, MilestoneMediaServices, etc.)</li>
+</ul>
+<hr>
+<h4 id="step-6-medianvideoapi-downloads-and-processes-video">Step 6: MedianVideoApi Downloads and Processes Video</h4>
+<p><strong>Description</strong>: The recorder service (MedianVideoApi) receives the request, downloads video from the VMS for the specified time range, and processes it using FFmpeg.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>video/src/MedianVideoApi/Controllers/DataController.cs</code>]</li>
+<li>[<code>video/src/MedianVideoApi/appsettings.json</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong> (Configuration):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From appsettings.json</span>
+{
+  <span class="hljs-attr">"FootageStartFromSeconds"</span>: <span class="hljs-number">-5</span>,
+  <span class="hljs-attr">"FootageEndAtSeconds"</span>: <span class="hljs-number">5</span>,
+  <span class="hljs-attr">"FootageOffsetSeconds"</span>: <span class="hljs-number">0</span>,
+  <span class="hljs-attr">"StoragePath"</span>: <span class="hljs-string">"C:\\Users\\admin\\Desktop\\Footage"</span>,
+  <span class="hljs-attr">"TempPath"</span>: <span class="hljs-string">"D:\\Temp\\video"</span>
+}
+</div></code></pre>
+<p><strong>Code Snippet</strong> (Processing):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From MedianVideoApi DataController.cs</span>
+[<span class="hljs-meta">HttpPost(<span class="hljs-meta-string">"{cameraReferenceId}/{controllerName}/{footageFileName}/{snapshotFileName}/{timetick}/footagesnapshot"</span>)</span>]
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">async</span> Task&lt;IActionResult&gt; <span class="hljs-title">GenerateFootageSnapshot</span>(<span class="hljs-params">
+    <span class="hljs-keyword">string</span> cameraReferenceId, 
+    <span class="hljs-keyword">string</span> controllerName, 
+    <span class="hljs-keyword">string</span> footageFileName, 
+    <span class="hljs-keyword">string</span> snapshotFileName, 
+    <span class="hljs-keyword">long</span> timetick
+</span>)</span> {
+    DateTime eventTime = <span class="hljs-keyword">new</span> DateTime(timetick);
+    Serilog.Log.Information(<span class="hljs-string">$"called GenerateFootageSnapshot at time : <span class="hljs-subst">{eventTime}</span>"</span>);
+    
+    <span class="hljs-comment">// Wait 10 seconds so footage can contain a few seconds after the event</span>
+    Thread.Sleep(<span class="hljs-number">10000</span>);
+    
+    <span class="hljs-comment">// Read configuration</span>
+    <span class="hljs-keyword">int</span> footageStartFromSecondsInt = <span class="hljs-number">-5</span>;
+    <span class="hljs-keyword">int</span>.TryParse(_configuration.GetSection(<span class="hljs-string">"FootageStartFromSeconds"</span>).Value, <span class="hljs-keyword">out</span> footageStartFromSecondsInt);
+    
+    <span class="hljs-keyword">int</span> footageEndAtSecondsInt = <span class="hljs-number">5</span>;
+    <span class="hljs-keyword">int</span>.TryParse(_configuration.GetSection(<span class="hljs-string">"FootageEndAtSeconds"</span>).Value, <span class="hljs-keyword">out</span> footageEndAtSecondsInt);
+    
+    <span class="hljs-comment">// Calculate time range</span>
+    DateTime fromDate = eventTime.AddSeconds(footageStartFromSecondsInt);
+    DateTime toDate = eventTime.AddSeconds(footageEndAtSecondsInt);
+    
+    <span class="hljs-comment">// Prepare file paths</span>
+    <span class="hljs-keyword">var</span> storagePath = _configuration.GetSection(<span class="hljs-string">"StoragePath"</span>).Value;
+    <span class="hljs-keyword">string</span> dateForStoragePath = eventTime.ToString(<span class="hljs-string">"yyyyMMdd"</span>);
+    <span class="hljs-keyword">string</span> footageFilePath = storagePath + <span class="hljs-string">$"\\Footage\\<span class="hljs-subst">{dateForStoragePath}</span>"</span>;
+    <span class="hljs-keyword">string</span> snapshotFilePath = storagePath + <span class="hljs-string">$"\\Snapshot\\<span class="hljs-subst">{dateForStoragePath}</span>"</span>;
+    
+    <span class="hljs-keyword">if</span> (!Directory.Exists(footageFilePath))
+        Directory.CreateDirectory(footageFilePath);
+    <span class="hljs-keyword">if</span> (!Directory.Exists(snapshotFilePath))
+        Directory.CreateDirectory(snapshotFilePath);
+    
+    <span class="hljs-keyword">string</span> fullFootageFilePath = footageFilePath + <span class="hljs-string">$"\\<span class="hljs-subst">{footageFileName}</span>.mp4"</span>;
+    <span class="hljs-keyword">string</span> fullSnapshotFilePath = snapshotFilePath + <span class="hljs-string">$"\\<span class="hljs-subst">{snapshotFileName}</span>.jpeg"</span>;
+    
+    <span class="hljs-comment">// Download and process based on VMS type</span>
+    <span class="hljs-keyword">switch</span> (controllerName) {
+        <span class="hljs-keyword">case</span> CONST.CONTROLLER.HIKCENTRAL:
+            <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> HikHelper(connectionInfo, FFMPEGPath)
+                .Download_Video(cameraReferenceId, tempFilePath, fullFootageFilePath, fullSnapshotFilePath, fromDate, toDate);
+            <span class="hljs-keyword">break</span>;
+            
+        <span class="hljs-keyword">case</span> CONST.CONTROLLER.MILESTONE:
+            <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> MilestoneHelper(_milestoneConfiguration)
+                .DownloadVideo(cameraReferenceId, fullFootageFilePath, fullSnapshotFilePath, fromDate, toDate);
+            <span class="hljs-keyword">break</span>;
+            
+        <span class="hljs-comment">// ... other VMS types</span>
+    }
+    
+    <span class="hljs-keyword">return</span> Ok();
+}
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li><strong>10-second delay</strong>: Ensures footage is available in the VMS (recording lag)</li>
+<li><strong>Time range calculation</strong>: Default -5 to +5 seconds from event time (10 seconds total)</li>
+<li><strong>Directory structure</strong>: Organized by date <code>YYYYMMDD</code> for efficient storage</li>
+<li><strong>VMS-specific download</strong>: Each VMS has a dedicated helper class</li>
+<li><strong>Dual output</strong>: Generates both MP4 video and JPEG snapshot</li>
+<li><strong>FFmpeg processing</strong>: Used to convert raw video streams to MP4 format and extract snapshot frames</li>
+</ul>
+<p><strong>Data Flow for HikCentral Example</strong>:</p>
+<pre class="hljs"><code><div>HikCentral API → Download H.265 Video → FFmpeg Convert to MP4 → Save Footage
+                                      ↘ Extract Frame → Save Snapshot JPEG
+</div></code></pre>
+<hr>
+<h4 id="step-7-link-generated-media-to-case">Step 7: Link Generated Media to Case</h4>
+<p><strong>Description</strong>: Once footage and snapshots are generated, the FootageService links them to the case by creating media records in the CMS database.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>mqprocsvc/src/MqProcSvc/Footage/FootageService.cs</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong>:</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From FootageService.cs</span>
+<span class="hljs-comment">// Link snapshots and footages to case</span>
+List&lt;Task&lt;IFlurlResponse&gt;&gt; allSnapshotRequests = <span class="hljs-keyword">new</span> List&lt;Task&lt;IFlurlResponse&gt;&gt;();
+
+MozartApiRequest cmsApi = <span class="hljs-keyword">new</span> MozartApiRequest(
+    tenantId, 
+    Url.Combine(disco.cms_endpoint, <span class="hljs-string">"cases"</span>, caseId.ToString(), <span class="hljs-string">"media"</span>)
+);
+
+<span class="hljs-comment">// Link snapshots</span>
+<span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">string</span> snapshotFilename <span class="hljs-keyword">in</span> snapshotFilenames) {
+    allSnapshotRequests.Add(cmsApi.PostJsonAsync(<span class="hljs-keyword">new</span> {
+        CaseId = caseId,
+        FileName = snapshotFilename,
+        PointerUrl = Url.Combine(disco_public.video_endpoint, <span class="hljs-string">"snapshot"</span>, snapshotFilename)
+            .SetQueryParam(<span class="hljs-string">"blob"</span>)
+            .ToString(),
+    }));
+}
+
+<span class="hljs-comment">// Link footage videos</span>
+<span class="hljs-keyword">foreach</span> (<span class="hljs-keyword">string</span> footageFilename <span class="hljs-keyword">in</span> footageFilenames) {
+    allSnapshotRequests.Add(cmsApi.PostJsonAsync(<span class="hljs-keyword">new</span> {
+        CaseId = caseId,
+        FileName = footageFilename,
+        PointerUrl = Url.Combine(disco_public.video_endpoint, <span class="hljs-string">"footage"</span>, footageFilename)
+            .SetQueryParam(<span class="hljs-string">"blob"</span>)
+            .ToString(),
+    }));
+}
+
+<span class="hljs-comment">// Execute all requests in parallel</span>
+<span class="hljs-keyword">await</span> Task.WhenAll(allSnapshotRequests);
+</div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li>Creates media records in CMS database for each file</li>
+<li><code>PointerUrl</code> provides the public endpoint to retrieve the media</li>
+<li>Snapshots use <code>/snapshot/</code> endpoint</li>
+<li>Footage uses <code>/footage/</code> endpoint</li>
+<li><code>?blob</code> query parameter indicates binary file retrieval</li>
+<li>All API calls executed in parallel for efficiency</li>
+</ul>
+<hr>
+<h4 id="step-8-display-in-case-detail-page">Step 8: Display in Case Detail Page</h4>
+<p><strong>Description</strong>: When users open the case detail page, the frontend retrieves and displays all associated media including the automatically generated footage and snapshots.</p>
+<p><strong>Corresponding Source Files</strong>:</p>
+<ul>
+<li>[<code>core-frontend/MozartCoreFrontend/ClientApp/src/pages/cms/allcases/form.js</code>]</li>
+</ul>
+<p><strong>Code Snippet</strong> (Retrieve Media):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From allcases/form.js</span>
+<span class="hljs-keyword">const</span> config = {
+    <span class="hljs-attr">getMedia</span>: <span class="hljs-keyword">async</span> (id) =&gt; {
+        <span class="hljs-keyword">let</span> disco = <span class="hljs-keyword">await</span> Discovery.get();
+        <span class="hljs-keyword">let</span> url = <span class="hljs-string">`<span class="hljs-subst">${disco[<span class="hljs-string">'mozart-cms-api_endpoint'</span>]}</span>/cases/<span class="hljs-subst">${id}</span>/media?includeAssetImages=false`</span>;
+        <span class="hljs-keyword">return</span> mozartApi.get(url);
+    }
+};
+
+<span class="hljs-comment">// Load case data on mount</span>
+useEffect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span> (id) {
+        <span class="hljs-built_in">Promise</span>.all([
+            config.fetchModel(id),
+            <span class="hljs-comment">// ... other data</span>
+            config.getMedia(id),  <span class="hljs-comment">// Retrieve all media</span>
+        ]).then(<span class="hljs-function"><span class="hljs-params">results</span> =&gt;</span> {
+            setModel(results[<span class="hljs-number">0</span>]);
+            <span class="hljs-comment">// ...</span>
+            setMedia(results[<span class="hljs-number">9</span>]);  <span class="hljs-comment">// Set media state</span>
+        });
+    }
+}, [id]);
+</div></code></pre>
+<p><strong>Code Snippet</strong> (Display Playbacks Section):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From allcases/form.js - Playbacks Section</span>
+&lt;Grid item xs={<span class="hljs-number">12</span>} style={{ <span class="hljs-attr">paddingTop</span>: <span class="hljs-number">20</span> }}&gt;
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Typography</span> <span class="hljs-attr">variant</span>=<span class="hljs-string">"h5"</span>&gt;</span>Playbacks<span class="hljs-tag">&lt;/<span class="hljs-name">Typography</span>&gt;</span></span>
+&lt;<span class="hljs-regexp">/Grid&gt;
+&lt;Grid item xs={12}&gt;
+    &lt;Box className={classes.mediaRoot}&gt;
+        {
+            media.filter(x =&gt; x.UploadSource == MediaSource.SYSTEM).map((med, idx) =&gt; {
+                /</span><span class="hljs-regexp">/ Filter for footage files only
+                if (!med.PointerUrl.includes('/</span>footage/<span class="hljs-string">')) {
+                    return false;
+                }
+                
+                return &lt;div key={med.Id} className={classes.mediaContainer}&gt;
+                    &lt;MiniMedia 
+                        key={med.Id} 
+                        model={med} 
+                        style={{ width: '</span><span class="hljs-number">100</span>%<span class="hljs-string">', paddingTop: '</span><span class="hljs-number">56.25</span>%<span class="hljs-string">' }} 
+                    /&gt;
+                &lt;/div&gt;
+            })
+        }
+    &lt;/Box&gt;
+&lt;/Grid&gt;
+</span></div></code></pre>
+<p><strong>Code Snippet</strong> (Display Snapshots Section):</p>
+<pre class="hljs"><code><div><span class="hljs-comment">// From allcases/form.js - Snapshots Section</span>
+&lt;Grid item xs={<span class="hljs-number">12</span>} style={{ <span class="hljs-attr">paddingTop</span>: <span class="hljs-number">20</span> }}&gt;
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Typography</span> <span class="hljs-attr">variant</span>=<span class="hljs-string">"h5"</span>&gt;</span>Snapshots<span class="hljs-tag">&lt;/<span class="hljs-name">Typography</span>&gt;</span></span>
+&lt;<span class="hljs-regexp">/Grid&gt;
+&lt;Grid item xs={12}&gt;
+    &lt;Box className={classes.mediaRoot}&gt;
+        {
+            media.filter(x =&gt; x.UploadSource == MediaSource.SYSTEM).map((med, idx) =&gt; {
+                /</span><span class="hljs-regexp">/ Filter for snapshot files only
+                if (!med.PointerUrl.includes('/</span>snapshot/<span class="hljs-string">')) {
+                    return false;
+                }
+                
+                return &lt;div key={med.Id} className={classes.mediaContainer}&gt;
+                    &lt;MiniMedia 
+                        key={med.Id} 
+                        model={med} 
+                        style={{ width: '</span><span class="hljs-number">100</span>%<span class="hljs-string">', paddingTop: '</span><span class="hljs-number">56.25</span>%<span class="hljs-string">' }} 
+                    /&gt;
+                &lt;/div&gt;
+            })
+        }
+    &lt;/Box&gt;
+&lt;/Grid&gt;
+
+&lt;Grid item xs={12} style={{ paddingTop: 20 }}&gt;
+    &lt;Typography variant="h5"&gt;Nearest Camera View (Live)&lt;/Typography&gt;
+    &lt;Box className={classes.mediaRoot}&gt;
+        {closestCameras.map((cam, idx) =&gt; (
+            &lt;div key={cam} className={classes.mediaContainer}&gt;
+                &lt;Camera 
+                    model={cam} 
+                    style={{ width: '</span><span class="hljs-number">100</span>%<span class="hljs-string">', paddingTop: '</span><span class="hljs-number">56.25</span>%<span class="hljs-string">' }} 
+                    showName 
+                    showFullScreen 
+                /&gt;
+            &lt;/div&gt;
+        ))}
+    &lt;/Box&gt;
+&lt;/Grid&gt;
+</span></div></code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li><strong>Three sections displayed</strong>:
+<ol>
+<li><strong>Playbacks</strong>: Shows all MP4 video files (URL contains <code>/footage/</code>)</li>
+<li><strong>Snapshots</strong>: Shows all JPEG images (URL contains <code>/snapshot/</code>)</li>
+<li><strong>Nearest Camera View (Live)</strong>: Shows live feeds from closest cameras</li>
+</ol>
+</li>
+<li><strong>Filtering</strong>: <code>MediaSource.SYSTEM</code> indicates automatically generated media (vs user uploads)</li>
+<li><strong>MiniMedia component</strong>: Renders video player for MP4 files, image viewer for JPEG files</li>
+<li><strong>Layout</strong>: Grid layout with 380px containers for each media item</li>
+<li><strong>Aspect ratio</strong>: 16:9 aspect ratio maintained with <code>paddingTop: '56.25%'</code></li>
+</ul>
+<hr>
+<h3 id="complete-flow-diagram">Complete Flow Diagram</h3>
+<pre><code class="language-mermaid"><div class="mermaid">sequenceDiagram
+    participant CMS as CMS API
+    participant MQ as RabbitMQ
+    participant FS as FootageService<br/>(MqProcSvc)
+    participant VA as VideoApi
+    participant MVA as MedianVideoApi<br/>(Recorder)
+    participant VMS as Video Management<br/>System
+    participant Storage as File Storage
+    participant Frontend as Case Detail Page
+
+    Note over CMS: Case Created
+    CMS->>MQ: Publish "*.cms.case.created"<br/>{CaseId, Timestamp, EquipmentTag}
+    
+    MQ->>FS: Deliver message
+    
+    FS->>FS: Identify cameras<br/>(self + closest cameras)
+    
+    loop For each camera
+        FS->>VA: POST /assets/{cameraId}/footagesnapshot/{ticks}
+        VA->>VA: Get camera config<br/>Determine VMS type
+        VA->>VA: Save snapshot records to DB
+        VA->>MVA: POST /{cameraRef}/{controller}/{footageFile}/{snapshotFile}/{ticks}/footagesnapshot
+        
+        Note over MVA: Wait 10 seconds
+        
+        MVA->>VMS: Download video<br/>(eventTime -5s to +5s)
+        VMS-->>MVA: Return video stream
+        
+        MVA->>MVA: Process with FFmpeg<br/>Convert to MP4
+        MVA->>Storage: Save footage.mp4
+        MVA->>MVA: Extract frame with FFmpeg
+        MVA->>Storage: Save snapshot.jpeg
+        
+        MVA-->>VA: Success
+        VA-->>FS: Return filename
+    end
+    
+    loop For each file (footage & snapshot)
+        FS->>CMS: POST /cases/{caseId}/media<br/>{FileName, PointerUrl}
+        CMS->>CMS: Create media record
+        CMS-->>FS: Success
+    end
+    
+    Note over Frontend: User opens case detail
+    Frontend->>CMS: GET /cases/{caseId}/media
+    CMS-->>Frontend: Return media list
+    
+    Frontend->>Frontend: Render Playbacks section<br/>(footage files)
+    Frontend->>Frontend: Render Snapshots section<br/>(snapshot files)
+    
+    Frontend->>Storage: GET /footage/{filename}?blob
+    Storage-->>Frontend: Stream MP4 video
+    
+    Frontend->>Storage: GET /snapshot/{filename}?blob
+    Storage-->>Frontend: Return JPEG image
+</div></code></pre>
+<hr>
+<h3 id="configuration">Configuration</h3>
+<p><strong>Time Range Configuration</strong> ([video/src/MedianVideoApi/appsettings.json]):</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"FootageStartFromSeconds"</span>: <span class="hljs-number">-5</span>,
+  <span class="hljs-attr">"FootageEndAtSeconds"</span>: <span class="hljs-number">5</span>,
+  <span class="hljs-attr">"FootageOffsetSeconds"</span>: <span class="hljs-number">0</span>
+}
+</div></code></pre>
+<ul>
+<li><strong>FootageStartFromSeconds</strong>: Seconds before event time to start capture (default: -5)</li>
+<li><strong>FootageEndAtSeconds</strong>: Seconds after event time to end capture (default: 5)</li>
+<li><strong>Total Duration</strong>: <code>EndAt - StartFrom</code> = 10 seconds by default</li>
+<li><strong>FootageOffsetSeconds</strong>: Time adjustment if VMS clock differs from server clock</li>
+</ul>
+<p><strong>Storage Paths</strong> ([video/src/MedianVideoApi/appsettings.json]):</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"StoragePath"</span>: <span class="hljs-string">"C:\\Users\\admin\\Desktop\\Footage"</span>,
+  <span class="hljs-attr">"TempPath"</span>: <span class="hljs-string">"D:\\Temp\\video"</span>
+}
+</div></code></pre>
+<p><strong>Directory Structure</strong>:</p>
+<pre class="hljs"><code><div>StoragePath/
+├── Footage/
+│   └── 20260113/
+│       ├── footage_123_456_638420000000000.mp4
+│       └── footage_124_789_638420000000000.mp4
+└── Snapshot/
+    └── 20260113/
+        ├── snapshot_123_456_638420000000000.jpeg
+        └── snapshot_124_789_638420000000000.jpeg
+</div></code></pre>
+<p><strong>Filename Format</strong>: <code>{type}_{cameraConfigId}_{randomNumber}_{ticks}.{ext}</code></p>
+<ul>
+<li><code>type</code>: &quot;footage&quot; or &quot;snapshot&quot;</li>
+<li><code>cameraConfigId</code>: Database ID of camera configuration</li>
+<li><code>randomNumber</code>: Random number (1-1000) for uniqueness</li>
+<li><code>ticks</code>: .NET DateTime ticks (precise timestamp)</li>
+<li><code>ext</code>: &quot;mp4&quot; for footage, &quot;jpeg&quot; for snapshots</li>
+</ul>
+<hr>
+<h3 id="key-technical-details">Key Technical Details</h3>
+<p><strong>Automatic Processing</strong>:</p>
+<ul>
+<li>Fully automatic - no user intervention required</li>
+<li>Triggered by RabbitMQ message on case creation</li>
+<li>Asynchronous processing - doesn't block case creation</li>
+</ul>
+<p><strong>Multi-Camera Support</strong>:</p>
+<ul>
+<li>Captures from equipment camera if it's a CCTV</li>
+<li>Captures from all &quot;closest cameras&quot; configured for the equipment/location</li>
+<li>All cameras processed in parallel for efficiency</li>
+</ul>
+<p><strong>VMS Integration</strong>:</p>
+<ul>
+<li>Supports multiple VMS: Milestone, Dahua, HikCentral, Hikvision, SenseTime, Qognify</li>
+<li>Each VMS has dedicated helper class for video download</li>
+<li>Abstracts VMS differences behind common interface</li>
+</ul>
+<p><strong>File Formats</strong>:</p>
+<ul>
+<li><strong>Footage</strong>: MP4 (H.264 video codec)</li>
+<li><strong>Snapshot</strong>: JPEG image</li>
+<li>FFmpeg used for video conversion and frame extraction</li>
+</ul>
+<p><strong>Error Handling</strong>:</p>
+<ul>
+<li>Missing cameras gracefully skipped</li>
+<li>Failed downloads logged but don't stop other cameras</li>
+<li>Database transactions ensure data consistency</li>
+<li>Retry logic in VMS helpers for transient failures</li>
+</ul>
+<p><strong>Performance Optimization</strong>:</p>
+<ul>
+<li>Parallel requests for multiple cameras</li>
+<li>Asynchronous I/O operations</li>
+<li>Background service doesn't impact main API performance</li>
+</ul>
+<p><strong>Security</strong>:</p>
+<ul>
+<li>Tenant isolation enforced</li>
+<li>File access controlled via PointerUrl with authentication</li>
+<li>Separate public/internal discovery endpoints</li>
+</ul>
+<hr>
+<h2 id="external-playback-flow-diagrams">External Playback: Flow Diagrams</h2>
+<h3 id="external-playback-sequence-diagram">External Playback Sequence Diagram</h3>
+<pre><code class="language-mermaid"><div class="mermaid">sequenceDiagram
+    participant User as User Browser
+    participant Frontend as React Frontend
+    participant VideoAPI as Video API Service
+    participant WSServer as WebSocket Server
+    participant VideoHelper as Video Helper<br/>(Milestone/Dahua)
+    participant VideoSource as Video Source<br/>(Milestone/Dahua Server)
+
+    User->>Frontend: Select camera and time range
+    Frontend->>VideoAPI: GET /playbackurl?sessionId=xxx
+    VideoAPI->>Frontend: Return {url: ws://..., sessionId: xxx}
+    
+    Frontend->>WSServer: Connect WebSocket (ws://.../{sessionId})
+    WSServer->>Frontend: Connection established
+    
+    Frontend->>VideoAPI: POST /startplayback<br/>{sessionId, cameraId, startTime, endTime}
+    VideoAPI->>VideoHelper: StartVideo(playbackInput)
+    
+    alt Milestone Source
+        VideoHelper->>VideoSource: Connect via Milestone Mobile SDK
+        VideoSource->>VideoHelper: Return JPEG frames
+    else Dahua Source
+        VideoHelper->>VideoSource: API call to get RTSP URL
+        VideoSource->>VideoHelper: Return RTSP URL
+        VideoHelper->>VideoHelper: Start FFmpeg process with RTSP
+        Note over VideoHelper: FFmpeg converts RTSP<br/>to JPEG frames (15 FPS)
+    end
+    
+    loop Every frame (~15 FPS)
+        VideoHelper->>WSServer: Send frame via WebSocket<br/>{image: base64, time: timestamp}
+        WSServer->>Frontend: WebSocket message
+        Frontend->>User: Display frame in <img> tag
+    end
+    
+    User->>Frontend: Stop playback
+    Frontend->>VideoAPI: POST /stopplayback/{sessionId}
+    VideoAPI->>VideoHelper: CloseVideo(sessionId)
+    VideoHelper->>VideoSource: Close connection/Stop FFmpeg
+    VideoAPI->>WSServer: CloseConnection(sessionId)
+    WSServer->>Frontend: WebSocket closed
+    Frontend->>User: Video stopped
+</div></code></pre>
+<h3 id="external-playback-system-architecture-flowchart">External Playback System Architecture Flowchart</h3>
+<pre><code class="language-mermaid"><div class="mermaid">flowchart TD
+    A[User opens External Playback Page] --> B{Camera Type?}
+    
+    B -->|Milestone| C[Get Camera Config<br/>with Milestone Controller]
+    B -->|Dahua| D[Get Camera Config<br/>with Dahua Controller]
+    
+    C --> E[Connect to<br/>MilestoneMediaServices]
+    D --> F[Connect to<br/>DahuaMediaServices]
+    
+    E --> G[Request WebSocket URL]
+    F --> G
+    
+    G --> H[Establish WebSocket Connection]
+    
+    H --> I[Send Start Playback Request]
+    
+    I --> J{Video Source?}
+    
+    J -->|Milestone| K[Connect to Milestone Server<br/>via Mobile SDK]
+    J -->|Dahua| L[Get RTSP URL from<br/>Dahua DSS Pro]
+    
+    K --> M[Receive JPEG Frames<br/>from Milestone]
+    L --> N[Start FFmpeg Process]
+    N --> O[Convert RTSP to<br/>JPEG Frames]
+    
+    M --> P[Send Frames via<br/>WebSocket]
+    O --> P
+    
+    P --> Q[Frontend Receives<br/>Base64 Image Data]
+    
+    Q --> R[Display Frame in<br/>Video Player]
+    
+    R --> S{Continue Playing?}
+    S -->|Yes| P
+    S -->|No| T[Send Stop Request]
+    
+    T --> U[Close Video Source<br/>Connection]
+    U --> V[Close WebSocket]
+    V --> W[End]
+</div></code></pre>
+<h3 id="data-format-flow">Data Format Flow</h3>
+<pre><code class="language-mermaid"><div class="mermaid">flowchart LR
+    subgraph Milestone Path
+        MS[Milestone Server] -->|JPEG Frames| MSH[MilestoneHelper]
+    end
+    
+    subgraph Dahua Path
+        DH[Dahua DSS Pro] -->|RTSP Stream| FF[FFmpeg]
+        FF -->|JPEG Frames<br/>stdout| DHH[DahuaHelper]
+    end
+    
+    MSH --> WS[WebSocket Server]
+    DHH --> WS
+    
+    WS -->|"JSON Message<br/>image: base64<br/>time: timestamp"| FE[Frontend]
+    
+    FE -->|data:image/png;base64| IMG[Image Tag]
+    IMG -->|Rendered| USER[User Display]
+</div></code></pre>
+<hr>
+<h2 id="external-playback--live-view-key-technical-details">External Playback &amp; Live View: Key Technical Details</h2>
+<h3 id="video-format">Video Format</h3>
+<ul>
+<li><strong>Milestone</strong>: Direct JPEG frames from Milestone Mobile Service API</li>
+<li><strong>Dahua</strong>: RTSP stream converted to MJPEG (Motion JPEG) at 15 FPS using FFmpeg</li>
+</ul>
+<h3 id="communication-protocols">Communication Protocols</h3>
+<ul>
+<li><strong>HTTP API</strong>: Used for control operations (start, stop, configuration)</li>
+<li><strong>WebSocket</strong>: Used for streaming video frame data</li>
+<li><strong>WSS</strong>: WebSocket Secure for encrypted transmission in production</li>
+</ul>
+<h3 id="frame-rate">Frame Rate</h3>
+<ul>
+<li>Target: 15 FPS (frames per second)</li>
+<li>Controlled by FFmpeg parameters for Dahua</li>
+<li>Milestone frame rate depends on server configuration</li>
+</ul>
+<h3 id="image-encoding">Image Encoding</h3>
+<ul>
+<li>Video frames are JPEG-encoded images</li>
+<li>Transmitted as base64-encoded strings in JSON messages</li>
+<li>Frontend displays using HTML <code>&lt;img&gt;</code> tag with data URL</li>
+</ul>
+<h3 id="session-management">Session Management</h3>
+<ul>
+<li>Each video stream has a unique session ID (GUID)</li>
+<li>Session ID links WebSocket connection to video source</li>
+<li>Multiple concurrent streams supported via concurrent dictionary</li>
+</ul>
+<h3 id="resource-management">Resource Management</h3>
+<ul>
+<li><strong>Milestone</strong>: Uses VideoOS Mobile SDK connection pool</li>
+<li><strong>Dahua</strong>: Each session spawns a dedicated FFmpeg process</li>
+<li>Automatic cleanup on disconnect or timeout (30 seconds)</li>
+<li>Ping/pong mechanism keeps connections alive (60-second interval)</li>
+</ul>
+<h3 id="error-handling">Error Handling</h3>
+<ul>
+<li>WebSocket timeout detection</li>
+<li>FFmpeg process monitoring</li>
+<li>Automatic reconnection attempts in frontend</li>
+<li>Graceful degradation and error messaging to users</li>
+</ul>
+<hr>
+<h2 id="configuration">Configuration</h2>
+<h3 id="milestone-configuration">Milestone Configuration</h3>
+<p>Location: [<code>video/MilestoneMediaServices/appsettings.json</code>]</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"MilestoneConfiguration"</span>: {
+    <span class="hljs-attr">"ServerUrl"</span>: <span class="hljs-string">"https://milestone-server:port"</span>,
+    <span class="hljs-attr">"Username"</span>: <span class="hljs-string">"..."</span>,
+    <span class="hljs-attr">"Password"</span>: <span class="hljs-string">"..."</span>
+  },
+  <span class="hljs-attr">"WebSocketServerUrl"</span>: <span class="hljs-string">"ws://localhost:5000/media/ws"</span>
+}
+</div></code></pre>
+<h3 id="dahua-configuration">Dahua Configuration</h3>
+<p>Location: [<code>video/DahuaMediaServices/DahuaMediaServices/appsettings.json</code>]</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"DahuaConfiguration"</span>: {
+    <span class="hljs-attr">"ServerUrl"</span>: <span class="hljs-string">"https://dahua-dss-pro:port"</span>,
+    <span class="hljs-attr">"Username"</span>: <span class="hljs-string">"..."</span>,
+    <span class="hljs-attr">"Password"</span>: <span class="hljs-string">"..."</span>
+  },
+  <span class="hljs-attr">"WebSocketServerUrl"</span>: <span class="hljs-string">"ws://localhost:5001/media/ws"</span>
+}
+</div></code></pre>
+<hr>
+<h2 id="deployment-considerations">Deployment Considerations</h2>
+<h3 id="ffmpeg-installation-required-for-dahua">FFmpeg Installation (Required for Dahua)</h3>
+<ul>
+<li>FFmpeg must be installed on the server running DahuaMediaServices</li>
+<li>Common installation paths:
+<ul>
+<li>Windows: <code>C:\ffmpeg\bin\ffmpeg.exe</code></li>
+<li>Linux: <code>/usr/bin/ffmpeg</code> or <code>/usr/local/bin/ffmpeg</code></li>
+</ul>
+</li>
+<li>The service automatically searches common paths</li>
+</ul>
+<h3 id="network-configuration">Network Configuration</h3>
+<ul>
+<li>WebSocket ports must be open for client connections</li>
+<li>RTSP ports (typically 554) must be accessible from DahuaMediaServices to Dahua servers</li>
+<li>Milestone Mobile Service ports must be accessible</li>
+</ul>
+<h3 id="performance-tuning">Performance Tuning</h3>
+<ul>
+<li><strong>Frame Rate</strong>: Adjust FFmpeg FPS parameter based on network bandwidth</li>
+<li><strong>Image Quality</strong>: Adjust FFmpeg quality parameter (<code>-q:v</code>) for balance between quality and bandwidth</li>
+<li><strong>Concurrent Sessions</strong>: Monitor server resources for multiple simultaneous video streams</li>
+<li><strong>WebSocket Timeouts</strong>: Tune ping interval and timeout values based on network conditions</li>
+</ul>
+<hr>
+<h2 id="summary">Summary</h2>
+<p>The video feature in SCCS backend provides a unified interface for streaming video from both Milestone and Dahua sources. The key innovation is the use of <strong>image frame streaming over WebSocket</strong> rather than traditional video protocols, which provides:</p>
+<ol>
+<li><strong>Browser Compatibility</strong>: Works in all modern browsers without plugins</li>
+<li><strong>Flexibility</strong>: Easy to implement custom controls and timeline features</li>
+<li><strong>Scalability</strong>: Session-based architecture supports multiple concurrent users</li>
+<li><strong>Simplicity</strong>: Standard HTTP + WebSocket protocols, no specialized video streaming infrastructure</li>
+</ol>
+<p>The system architecture separates concerns effectively:</p>
+<ul>
+<li><strong>Frontend</strong>: React components for UI and display</li>
+<li><strong>Video Services</strong>: Dedicated microservices for each video source type</li>
+<li><strong>LegacyAPI</strong>: Legacy integration layer (not actively used for video currently)</li>
+<li><strong>WebSocket</strong>: Efficient real-time frame transmission</li>
+</ul>
+<p>This design provides a robust, maintainable solution for security camera video integration in the SCCS platform.</p>
+<hr>
+<h2 id="feature-comparison-summary">Feature Comparison Summary</h2>
+<h3 id="quick-reference-table">Quick Reference Table</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Live View</th>
+<th>Short Playback</th>
+<th>External Playback</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Purpose</strong></td>
+<td>Real-time monitoring</td>
+<td>Automatic incident documentation</td>
+<td>Detailed investigation</td>
+</tr>
+<tr>
+<td><strong>Trigger</strong></td>
+<td>User opens live view</td>
+<td>Automatic (case creation)</td>
+<td>User opens playback page</td>
+</tr>
+<tr>
+<td><strong>Duration</strong></td>
+<td>Continuous (until closed)</td>
+<td>10 seconds (configurable)</td>
+<td>User-defined</td>
+</tr>
+<tr>
+<td><strong>Technology</strong></td>
+<td>WebSocket streaming</td>
+<td>Pre-recorded MP4/JPEG files</td>
+<td>WebSocket streaming</td>
+</tr>
+<tr>
+<td><strong>Frame Rate</strong></td>
+<td>~15 FPS</td>
+<td>N/A (file-based)</td>
+<td>~15 FPS</td>
+</tr>
+<tr>
+<td><strong>Storage</strong></td>
+<td>Not stored</td>
+<td>Permanent server storage</td>
+<td>Not stored (streamed on-demand)</td>
+</tr>
+<tr>
+<td><strong>Format</strong></td>
+<td>JPEG frames (base64)</td>
+<td>MP4 video + JPEG snapshot</td>
+<td>JPEG frames (base64)</td>
+</tr>
+<tr>
+<td><strong>Controls</strong></td>
+<td>PTZ controls (if supported)</td>
+<td>Play/Pause/Download</td>
+<td>Timeline, Speed, Seek</td>
+</tr>
+<tr>
+<td><strong>Multi-camera</strong></td>
+<td>Yes (simultaneous views)</td>
+<td>Yes (automatic capture)</td>
+<td>One at a time</td>
+</tr>
+<tr>
+<td><strong>Primary Use</strong></td>
+<td>Active surveillance</td>
+<td>Quick incident review</td>
+<td>Forensic analysis</td>
+</tr>
+<tr>
+<td><strong>Access Location</strong></td>
+<td>Live view page, dashboards</td>
+<td>Case detail page</td>
+<td>Dedicated playback page</td>
+</tr>
+<tr>
+<td><strong>VMS Query</strong></td>
+<td>Real-time stream</td>
+<td>Historical footage (event time ±5s)</td>
+<td>Historical footage (user range)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="when-to-use-each-feature">When to Use Each Feature</h3>
+<p><strong>Use Live View when:</strong></p>
+<ul>
+<li>Monitoring real-time security situations</li>
+<li>Responding to active alarms or incidents</li>
+<li>Performing proactive surveillance</li>
+<li>Controlling PTZ cameras for better viewing angles</li>
+</ul>
+<p><strong>Use Short Playback when:</strong></p>
+<ul>
+<li>Reviewing incidents documented in cases</li>
+<li>Quick verification of alarm triggers</li>
+<li>Obtaining evidence for immediate case triage</li>
+<li>Accessing pre-captured footage without VMS access</li>
+</ul>
+<p><strong>Use External Playback when:</strong></p>
+<ul>
+<li>Conducting detailed incident investigations</li>
+<li>Reviewing extended time periods</li>
+<li>Analyzing events leading up to or following an incident</li>
+<li>Creating evidence packages requiring precise timing</li>
+<li>Performing forensic video analysis</li>
+</ul>
+<hr>
+<h2 id="document-metadata">Document Metadata</h2>
+<ul>
+<li><strong>Created</strong>: December 16, 2025</li>
+<li><strong>Author</strong>: GitHub Copilot (AI Assistant)</li>
+<li><strong>Version</strong>: 2.0</li>
+<li><strong>Last Updated</strong>: January 16, 2026</li>
+<li><strong>Major Changes in v2.0</strong>:
+<ul>
+<li>Reorganized into three distinct features: Live View, Short Playback, External Playback</li>
+<li>Added Short Playback comprehensive documentation</li>
+<li>Added feature comparison table and usage guidelines</li>
+</ul>
+</li>
+</ul>
+
+</body>
+</html>

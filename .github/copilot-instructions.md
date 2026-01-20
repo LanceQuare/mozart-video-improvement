@@ -41,6 +41,8 @@ This is a project for security company, user is able to manage security systems 
    - `src/core-frontend` – Web frontend
    - `src/legacyapi`    – Mircoservice for apis
    - `src/video`      – Mircoservice for video handling
+   - `src/mqprocsvc`   – Mircoservice for message queue processing
+   - `src/opcua`      – Mircoservice for OPC-UA integration
 
 ---
 

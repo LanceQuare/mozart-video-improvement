@@ -1,27 +1,87 @@
 # Video Feature Documentation - SCCS Backend
 
+## Table of Contents
+
+1. [Overview](#overview)
+   - [1. Live View](#1-live-view)
+   - [2. Short Playback](#2-short-playback)
+   - [3. External Playback](#3-external-playback)
+2. [System Integration](#system-integration)
+3. [System Architecture](#system-architecture)
+4. [Feature 1: Live View](#feature-1-live-view)
+5. [Feature 2: Short Playback (Automatic Case Footage)](#feature-2-short-playback-automatic-case-footage)
+   - [Short Playback: Step-by-Step Processing Flow](#short-playback-step-by-step-processing-flow)
+   - [Complete Flow Diagram](#complete-flow-diagram)
+   - [Configuration](#configuration)
+   - [Key Technical Details](#key-technical-details)
+6. [Feature 3: External Playback (User-Initiated Historical Playback)](#feature-3-external-playback-user-initiated-historical-playback)
+   - [External Playback: Step-by-Step Processing Flow](#external-playback-step-by-step-processing-flow)
+   - [External Playback: Use Cases](#external-playback-use-cases)
+   - [External Playback: Flow Diagrams](#external-playback-flow-diagrams)
+   - [External Playback & Live View: Key Technical Details](#external-playback--live-view-key-technical-details)
+7. [Feature Comparison Summary](#feature-comparison-summary)
+
+---
+
 ## Overview
 
-The SCCS (Security Command and Control System) backend provides comprehensive video capabilities for both **live viewing** and **playback** of security camera footage. The system integrates with two primary video sources:
-1. **Milestone Mobile Service** - Returns video as image frames
-2. **Dahua DSS Pro** - Returns RTSP URLs that are converted to image frames
+The SCCS (Security Command and Control System) backend provides three distinct video features for comprehensive security monitoring:
 
-The video streaming architecture uses **WebSocket** connections to efficiently transmit image frames from backend services to the frontend, enabling real-time video display in the web browser.
+### 1. Live View
+**Purpose**: Real-time monitoring of camera feeds
+- Live streaming from cameras for active surveillance
+- PTZ (Pan-Tilt-Zoom) camera controls for some cameras
+- Multiple simultaneous camera views
+- Used by security operators for real-time situation awareness
+
+### 2. Short Playback
+**Purpose**: Automatic incident documentation
+- **10-second video clips** (5 seconds before + 5 after event) automatically generated when cases/alarms are created
+- Provides immediate visual context for incidents without manual retrieval
+- Captures from multiple cameras (equipment camera + closest cameras)
+- Displayed in case detail page as "Playbacks" and "Snapshots"
+- **Format**: Pre-recorded MP4 files and JPEG snapshots stored on server
+
+### 3. External Playback
+**Purpose**: User-initiated historical footage review
+- On-demand video playback with timeline controls
+- Date selection and time range navigation (24-hour timeline)
+- Playback speed control (1x to 4x)
+- Used for detailed incident investigation and evidence gathering
+- **Format**: Real-time streaming via WebSocket (not pre-recorded files)
+
+---
+
+## System Integration
+
+The system integrates with multiple Video Management Systems (VMS):
+- **Milestone Mobile Service** - Returns video as image frames
+- **Dahua DSS Pro** - Returns RTSP URLs that are converted to image frames
+- **HikCentral, Hikvision, SenseTime, Qognify** - Various VMS integrations
+
+**Technology Stack**:
+- **WebSocket connections**: Used for Live View and External Playback (real-time streaming)
+- **File-based delivery**: Used for Short Playback (pre-generated MP4/JPEG files)
+- **FFmpeg**: Video processing for format conversion and frame extraction
 
 ---
 
 ## System Architecture
 
 ### Components
-- **Frontend (React 17)**: Web application displaying video streams
+- **Frontend (React 17)**: Web application displaying video streams and case details
 - **LegacyAPI Service**: API gateway (communication layer between frontend and video services) - *Currently not actively used for video, frontend directly connects to video services*
+- **MqProcSvc (Message Queue Processing Service)**: Background service that listens for case creation events and triggers footage generation
+- **VideoApi**: Main video API service for footage/snapshot generation and retrieval
+- **MedianVideoApi**: Video recording service that handles actual video downloads from VMS
 - **MilestoneMediaServices**: Microservice handling Milestone video playback
 - **DahuaMediaServices**: Microservice handling Dahua video playback and live view
 - **Video Sources**: 
   - Milestone Mobile Server (image frames)
   - Dahua DSS Pro (RTSP streams)
+  - HikCentral, Hikvision, SenseTime, Qognify (various VMS)
 
-### Communication Flow
+### Communication Flow (External Playback & Live View)
 
 ```mermaid
 graph LR
@@ -39,11 +99,472 @@ graph LR
 
 ---
 
-## Step-by-Step Processing Flow
+## Feature 1: Live View
 
-### Step 1: Frontend Initialization and Camera Configuration Discovery
+### Overview
 
-**Description**: When a user accesses a video page (playback or live view), the frontend component loads camera configuration from the core API and determines which video controller to use.
+Live View provides real-time video streaming from security cameras for active monitoring. Security operators can view multiple cameras simultaneously, and for PTZ (Pan-Tilt-Zoom) cameras, they can control camera movements and zoom levels.
+
+**Key Characteristics**:
+- Real-time streaming via WebSocket
+- Minimal latency for immediate situational awareness
+- PTZ controls available for compatible cameras
+- Multiple concurrent camera views supported
+- Continuous streaming until user closes the view
+
+**Technology**:
+- Uses the same WebSocket streaming infrastructure as External Playback
+- Camera component handles both live view and playback display
+- Integrates with VMS live streaming endpoints
+
+**Frontend Components**:
+- [`core-frontend/MozartCoreFrontend/ClientApp/src/pages/video/liveview.js`]
+- [`core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/camera.js`]
+
+**Display Locations**:
+- Dedicated Live View page for security monitoring
+- Case detail page "Nearest Camera View (Live)" section
+- Dashboard widgets for at-a-glance monitoring
+
+---
+
+### PTZ (Pan-Tilt-Zoom) Camera Controls
+
+For cameras with PTZ capabilities, operators can control camera movements and zoom in real-time during live viewing. The system supports directional movements (pan/tilt), zoom, and preset home position.
+
+#### PTZ Control Panel UI
+
+**Corresponding Source Files**:
+- [`core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/camera.js`]
+
+**Code Snippet** (Frontend - PTZ Control Panel):
+
+```javascript
+// From camera.js - PTZ Control Handler
+const handlePTZControl = async (direction) => {
+    let disco = await Discovery.get();
+    let url = `${disco['mozart-video-api_endpoint']}/moveptzcamera/${direction}`;
+
+    mozartApi.post(url, cameraConfig)
+        .then(response => {
+            console.log(`Moving camera ${direction}`);
+        })
+        .catch(err => {
+            toast.error("Error moving PTZ camera", { autoClose: true });
+        })
+}
+
+// PTZ Control Panel Render (only shown if camera has PTZ capability)
+{
+    cameraConfig?.PTZ && 
+    (
+        <Grid container className={classes.ptzControlContainer} spacing={0}>
+            {/* Tilt Up (continuous while held) */}
+            <Grid item xs={12}>
+                <KeyboardDoubleArrowUp 
+                    className={classes.ptzControlsDoubleUp} 
+                    onMouseDown={() => handlePTZControl('tiltup')} 
+                    onMouseUp={() => handlePTZControl('stop')} 
+                />
+            </Grid>
+
+            {/* Up (single step) */}
+            <Grid item xs={12}>
+                <KeyboardArrowUpTwoTone 
+                    className={classes.ptzControlsUp} 
+                    onClick={() => handlePTZControl('up')} 
+                />
+            </Grid>
+
+            {/* Left Controls */}
+            <Grid item xs={3}>
+                <KeyboardDoubleArrowLeft 
+                    className={classes.ptzControlsDoubleLeft} 
+                    onMouseDown={() => handlePTZControl('panleft')} 
+                    onMouseUp={() => handlePTZControl('stop')} 
+                />
+            </Grid>
+
+            {/* Center Controls (Left, Home, Right) */}
+            <Grid item xs={6}>
+                <Grid container spacing={1}>
+                    <Grid item xs={4}>
+                        <KeyboardArrowLeftTwoTone 
+                            className={classes.ptzControlsLeft} 
+                            onClick={() => handlePTZControl('left')} 
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <HomeIcon 
+                            className={classes.ptzControlsMiddle} 
+                            onClick={() => handlePTZControl('home')} 
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <KeyboardArrowRightTwoTone 
+                            className={classes.ptzControlsRight} 
+                            onClick={() => handlePTZControl('right')} 
+                        />
+                    </Grid>
+                </Grid>
+            </Grid>
+
+            {/* Right Controls */}
+            <Grid item xs={3}>
+                <KeyboardDoubleArrowRight 
+                    className={classes.ptzControlsDoubleRight} 
+                    onMouseDown={() => handlePTZControl('panright')} 
+                    onMouseUp={() => handlePTZControl('stop')} 
+                />
+            </Grid>
+
+            {/* Bottom Controls (Zoom In, Down, Zoom Out) */}
+            <Grid item xs={12}>
+                <Grid container spacing={1}>
+                    <Grid item xs={4}>
+                        <ZoomInIcon 
+                            className={classes.ptzControlsZoomIn} 
+                            onClick={() => handlePTZControl('zoomin')} 
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <KeyboardArrowDownTwoTone 
+                            className={classes.ptzControlsDown} 
+                            onClick={() => handlePTZControl('down')} 
+                        />
+                    </Grid>
+                    <Grid item xs={4}>
+                        <ZoomOutIcon 
+                            className={classes.ptzControlsZoomOut} 
+                            onClick={() => handlePTZControl('zoomout')} 
+                        />
+                    </Grid>
+                </Grid>
+            </Grid>
+            
+            {/* Tilt Down (continuous while held) */}
+            <Grid item xs={12}>
+                <KeyboardDoubleArrowDown 
+                    className={classes.ptzControlsDoubleDown} 
+                    onMouseDown={() => handlePTZControl('tiltdown')} 
+                    onMouseUp={() => handlePTZControl('stop')} 
+                />
+            </Grid>
+        </Grid>
+    )
+}
+```
+
+**Explanation**:
+- **PTZ Control Panel Layout**: 3x3 grid with directional arrows, home button, and zoom controls
+- **Two Control Modes**:
+  - **Click (onClick)**: Single-step movements (up, down, left, right, zoomin, zoomout, home)
+  - **Hold (onMouseDown/onMouseUp)**: Continuous movements (tiltup, tiltdown, panleft, panright) - stops when mouse released
+- **Conditional Display**: PTZ panel only shown if `cameraConfig.PTZ` is true
+- **Commands Supported**:
+  - `up`, `down`, `left`, `right` - Single-step movements
+  - `tiltup`, `tiltdown`, `panleft`, `panright` - Continuous movements (requires stop command)
+  - `zoomin`, `zoomout` - Zoom controls
+  - `home` - Return to preset home position
+  - `stop` - Stop continuous movement
+
+---
+
+#### PTZ Backend Processing
+
+**Corresponding Source Files**:
+- [`video/src/VideoApi/Controllers/DataController.cs`]
+- [`video/src/MilestoneService/Controllers/DataController.cs`]
+
+**Code Snippet** (Backend - Video API Route):
+
+```csharp
+// From VideoApi DataController.cs
+[HttpPost("moveptzcamera/{direction}")]
+public async Task<IActionResult> MovePTZCamera(string direction, [FromBody] CameraConfig cameraConfig)
+{
+    // Get PTZ controller configuration for this camera
+    var ptzController = _dbContext.CacheGet<PtzController>()
+        .FirstOrDefault(x => x.Id == cameraConfig.PtzControllerId);
+    
+    if (ptzController == null)
+        return NotFound("PTZ Controller not configured");
+    
+    // Get camera external reference based on VMS type
+    string externalCameraRef = GetExternalCameraReference(cameraConfig, ptzController.ControllerName);
+    
+    // Forward PTZ command to VMS-specific service
+    var ptzUrl = Flurl.Url.Combine(
+        ptzController.RecorderUrl, 
+        "moveptzcamera", 
+        externalCameraRef, 
+        ptzController.ControllerName.ToString(), 
+        direction
+    );
+    
+    await ptzUrl.PostAsync();
+    
+    return Ok();
+}
+```
+
+**Code Snippet** (Backend - Milestone PTZ Control):
+
+```csharp
+// From MilestoneService DataController.cs
+[HttpPost]
+[Route("moveptzcamera/{cameraid}/{controllername}/{direction}")]
+public IEnumerable<string> ptzcameracontrol(string cameraid, string controllername, string direction)
+{
+    // Initialize Milestone SDK
+    VideoOS.Platform.SDK.Environment.Initialize();
+    
+    Uri uri = new Uri(milestoneUrl);
+    _credentialCache = VideoOS.Platform.Login.Util.BuildCredentialCache(
+        uri, milestoneUsername, milestonePassword, milestoneAuthorization
+    );
+    
+    // Load Milestone site item
+    Item siteItem = VideoOS.Platform.SDK.Environment.LoadSiteItem(false, uri, _credentialCache);
+    
+    // Get camera FQID from internal dictionary
+    Guid cameraGuid = Guid.Parse(cameraid);
+    var fqid = namedict[cameraGuid];
+    
+    // Execute PTZ command based on direction
+    if (direction.ToLower() == "up")
+        MoveUpClicked(fqid);
+    else if (direction.ToLower() == "down")
+        MoveDownClicked(fqid);
+    else if (direction.ToLower() == "right")
+        MoveRightClicked(fqid);
+    else if (direction.ToLower() == "left")
+        MoveLeftClicked(fqid);
+    else if (direction.ToLower() == "zoomin")
+        ZoominCliked(fqid);
+    else if (direction.ToLower() == "zoomout")
+        ZoomoutCliked(fqid);
+    else if (direction.ToLower() == "panleft")
+        PanLeftCliked(fqid);
+    else if (direction.ToLower() == "panright")
+        PanRightCliked(fqid);
+    else if (direction.ToLower() == "tiltup")
+        TiltUpCliked(fqid);
+    else if (direction.ToLower() == "tiltdown")
+        TiltDownCliked(fqid);
+    else if (direction.ToLower() == "stop")
+        StopMoveClicked(fqid);
+    else if (direction.ToLower() == "home")
+        MoveHomeClicked(fqid);
+    
+    return new string[] { "success" };
+}
+
+// Individual PTZ command methods
+private void MoveUpClicked(FQID fqid)
+{
+    EnvironmentManager.Instance.PostMessage(
+        new Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.Up), 
+        fqid
+    );
+}
+
+private void MoveDownClicked(FQID fqid)
+{
+    EnvironmentManager.Instance.PostMessage(
+        new Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.Down), 
+        fqid
+    );
+}
+
+private void MoveLeftClicked(FQID fqid)
+{
+    EnvironmentManager.Instance.PostMessage(
+        new Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.Left), 
+        fqid
+    );
+}
+
+private void MoveRightClicked(FQID fqid)
+{
+    EnvironmentManager.Instance.PostMessage(
+        new Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.Right), 
+        fqid
+    );
+}
+
+private void ZoominCliked(FQID fqid)
+{
+    EnvironmentManager.Instance.PostMessage(
+        new Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.ZoomIn), 
+        fqid
+    );
+}
+
+private void ZoomoutCliked(FQID fqid)
+{
+    EnvironmentManager.Instance.PostMessage(
+        new Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.ZoomOut), 
+        fqid
+    );
+}
+
+private void MoveHomeClicked(FQID fqid)
+{
+    EnvironmentManager.Instance.PostMessage(
+        new Message(MessageId.Control.PTZMoveCommand, PTZMoveCommandData.Home), 
+        fqid
+    );
+}
+
+// Continuous movement methods (pan/tilt with speed control)
+private void PanLeftCliked(FQID fqid)
+{
+    StartMoveClicked(fqid, panSlide: -1, panSpeed: 0.5, tiltSlide: 0, tiltSpeed: 0, zoomSlide: 0, zoomSpeed: 0);
+}
+
+private void PanRightCliked(FQID fqid)
+{
+    StartMoveClicked(fqid, panSlide: 1, panSpeed: 0.5, tiltSlide: 0, tiltSpeed: 0, zoomSlide: 0, zoomSpeed: 0);
+}
+
+private void TiltUpCliked(FQID fqid)
+{
+    StartMoveClicked(fqid, panSlide: 0, panSpeed: 0, tiltSlide: -1, tiltSpeed: 0.5, zoomSlide: 0, zoomSpeed: 0);
+}
+
+private void TiltDownCliked(FQID fqid)
+{
+    StartMoveClicked(fqid, panSlide: 0, panSpeed: 0, tiltSlide: 1, tiltSpeed: 0.5, zoomSlide: 0, zoomSpeed: 0);
+}
+
+private void StartMoveClicked(FQID fqid, int panSlide = 0, double panSpeed = 0, 
+    int tiltSlide = 0, double tiltSpeed = 0, int zoomSlide = 0, double zoomSpeed = 0)
+{
+    PTZMoveStartCommandData2 data = new PTZMoveStartCommandData2();
+    data.Pan = panSlide;
+    data.PanSpeed = panSpeed;
+    data.Tilt = tiltSlide;
+    data.TiltSpeed = tiltSpeed;
+    data.Zoom = zoomSlide;
+    data.ZoomSpeed = zoomSpeed;
+    
+    EnvironmentManager.Instance.PostMessage(
+        new Message(MessageId.Control.PTZMoveStartCommand, data), 
+        fqid
+    );
+}
+
+private void StopMoveClicked(FQID fqid)
+{
+    EnvironmentManager.Instance.PostMessage(
+        new Message(MessageId.Control.PTZMoveStopCommand), 
+        fqid
+    );
+}
+```
+
+**Explanation**:
+- **VideoApi Layer**: Routes PTZ commands to appropriate VMS service based on camera configuration
+- **Milestone Integration**: Uses Milestone Mobile SDK for PTZ control
+  - `PTZMoveCommand`: Simple directional commands (up, down, left, right, zoom)
+  - `PTZMoveStartCommand`: Continuous movement with speed control (pan/tilt)
+  - `PTZMoveStopCommand`: Stops continuous movement
+- **Speed Control**: Pan and tilt speeds set to 0.5 (50% of maximum speed) for smooth control
+- **Direction Parameters**:
+  - `panSlide`: -1 (left), 0 (none), 1 (right)
+  - `tiltSlide`: -1 (up), 0 (none), 1 (down)
+  - `panSpeed/tiltSpeed`: 0.0 to 1.0 (percentage of max speed)
+
+---
+
+#### PTZ Controller Configuration
+
+**Database Model**:
+- [`video/src/VideoDb/Models/PtzController.cs`]
+
+**Code Snippet**:
+
+```csharp
+// From PtzController.cs
+[Audited]
+[Display(Name = "PTZ Controller")]
+public class PtzController {
+    public int Id { get; set; }
+
+    [Required]
+    [StringLength(255)]
+    public string Name { get; set; }
+
+    [Required]
+    [Display(Name = "Controller Name")]
+    public SnapshotControllerName ControllerName { get; set; }  // Milestone, Dahua, etc.
+
+    [StringLength(2000)]
+    [Url]
+    [Display(Name = "Recorder URL")]
+    public string RecorderUrl { get; set; }  // URL of PTZ control service
+
+    [Display(Name = "Server IP Address")]
+    public string ServerIp { get; set; }
+
+    [Display(Name = "Server Port")]
+    public int? ServerPort { get; set; }
+
+    [Display(Name = "Backup Server IP Address")]
+    public string BackupServerIp { get; set; }
+
+    [Display(Name = "Backup Server Port")]
+    public int? BackupServerPort { get; set; }
+}
+
+// Camera configuration links to PTZ controller
+public class CameraConfig {
+    // ... other properties
+    
+    public int? PtzControllerId { get; set; }
+    public PtzController PtzController { get; set; }
+}
+```
+
+**Configuration Flow**:
+1. Administrator configures PTZ Controller with VMS connection details
+2. Camera configuration links to PTZ Controller via `PtzControllerId`
+3. Frontend checks `cameraConfig.PTZ` flag to show/hide PTZ controls
+4. PTZ commands routed through configured controller to VMS
+
+---
+
+## Feature 2: Short Playback (Automatic Case Footage)
+
+### Overview
+
+Short Playback automatically generates **10-second video clips** (configurable) and snapshot images when cases/alarms are created. This provides immediate visual context for incidents without requiring manual footage retrieval. The clips are pre-recorded MP4 files stored on the server and displayed in the case detail page.
+
+**Key Characteristics**:
+- **Automatic**: Triggered by case creation, no user action required
+- **Short duration**: Default 10 seconds (5 before + 5 after event)
+- **Pre-recorded**: MP4 files and JPEG images stored on server
+- **Multi-camera**: Captures from equipment camera + closest cameras
+- **File-based**: Served as downloadable files, not streamed
+
+**Differences from External Playback**:
+| Aspect | Short Playback | External Playback |
+|--------|----------------|-------------------|
+| **Trigger** | Automatic (case creation) | User-initiated |
+| **Duration** | 10 seconds (configurable) | User-defined (minutes to hours) |
+| **Format** | Pre-recorded MP4 files | Real-time WebSocket streaming |
+| **Purpose** | Quick incident review | Detailed investigation |
+| **Storage** | Permanent files on server | Streamed on-demand, not stored |
+| **Access** | Case detail page | Dedicated playback page |
+
+---
+
+### Short Playback: Step-by-Step Processing Flow
+
+#### Step 1: Case Created - Message Published
+
+**Description**: When a case is created (via API, automation, or alarm trigger), the CMS (Case Management System) API publishes a message to RabbitMQ indicating a new case has been created. This triggers the automatic footage generation process.
 
 **Corresponding Source Files**:
 - [`core-frontend/MozartCoreFrontend/ClientApp/src/pages/video/playback.js`]
@@ -87,9 +608,9 @@ const getPlaybackControllers = async () => {
 
 ---
 
-### Step 2: WebSocket Connection Setup
+#### Step 2: WebSocket Connection Setup
 
-**Description**: Before requesting video playback, the frontend obtains a WebSocket URL and session ID from the video service. This establishes a dedicated channel for streaming video frames.
+**Description**: Before requesting External Playback, the frontend obtains a WebSocket URL and session ID from the video service. This establishes a dedicated channel for streaming video frames.
 
 **Corresponding Source Files**:
 - [`core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/playbackcameraframes_byimageframes.js`]
@@ -988,9 +1509,9 @@ public async Task<bool> StopVideo(string sessionId)
 
 ---
 
-## Video Playback Use Cases
+## External Playback: Use Cases
 
-### Use Case 1: Date Selection for Playback
+### Use Case 1: Date Selection for External Playback
 
 **Description**: Users can select a specific date to view historical camera footage from that day.
 
@@ -1282,9 +1803,713 @@ handleRefreshPlayback(); // Plays from Dec 15, 2025 at 14:30:00 at 2x speed
 
 ---
 
-## Flow Diagrams
+## Feature 3: External Playback (User-Initiated Historical Playback)
 
-### Complete Video Playback Sequence Diagram
+### Overview
+
+External Playback allows users to view historical camera footage on-demand with full timeline controls. Users can select specific dates, navigate through 24-hour timelines, and control playback speed. This feature is used for detailed incident investigation and evidence gathering.
+
+**Key Characteristics**:
+- **User-initiated**: Started by user action on playback page
+- **Flexible duration**: User selects date and time range
+- **Real-time streaming**: Video frames streamed via WebSocket
+- **Timeline controls**: Seek, pause, resume, speed control
+- **Single camera**: One camera at a time per player
+- **On-demand**: Video retrieved from VMS only when requested
+
+**Technology**:
+- WebSocket for frame streaming
+- Session-based connections (unique session ID per stream)
+- Frame-by-frame transmission (JPEG images as base64)
+- ~15 FPS for smooth playback
+
+**Frontend Page**:
+- [`core-frontend/MozartCoreFrontend/ClientApp/src/pages/video/playback.js`]
+- [`core-frontend/MozartCoreFrontend/ClientApp/src/components/controls/playbackcameraframes_byimageframes.js`]
+
+---
+
+### External Playback: Step-by-Step Processing Flow
+
+#### Step 1: Frontend Initialization and Camera Configuration Discovery
+
+**Description**: When a user accesses the External Playback page, the frontend component loads camera configuration from the core API and determines which video controller to use.
+
+**Corresponding Source Files**:
+- CMS API publishes to: `*.cms.case.created` topic on `CONST.MQ_TOPIC_EXCHANGE`
+
+**Message Data**:
+```json
+{
+  "Id": 12345,
+  "Timestamp": "2026-01-13T14:30:00Z",
+  "EquipmentTag": "CAM-001",
+  "DeviceData": "{...}",
+  "CaseNo": "CASE-2026-001"
+}
+```
+
+**Explanation**:
+- The message contains case details including the event timestamp and equipment tag
+- The timestamp is used to determine the time range for footage capture
+- EquipmentTag identifies which equipment triggered the case
+
+---
+
+#### Step 2: FootageService Receives Message
+
+**Description**: The FootageService (running in MqProcSvc) listens for case creation messages and initiates the automatic footage generation process.
+
+**Corresponding Source Files**:
+- [`mqprocsvc/src/MqProcSvc/Footage/FootageService.cs`]
+
+**Code Snippet**:
+
+```csharp
+// From FootageService.cs
+public class FootageService : IHostedService, IDisposable {
+    readonly MqSubscriber _mqSubscriber;
+    
+    public FootageService(IConfiguration config) {
+        MqConfig mqCfg = new MqConfig();
+        config.Bind("RabbitMq", mqCfg);
+        
+        // Subscribe to case.created messages
+        _mqSubscriber = MqSubscriber.CreateTopicSubscriber(
+            mqCfg, 
+            "*.cms.case.created", 
+            CONST.MQ_TOPIC_EXCHANGE, 
+            $"{Util.GetRequiredAppSetting("App:Id")}-{_serviceName}"
+        );
+        
+        _mqSubscriber.OnMessageReceived += _mqSubscriber_OnMessageReceived;
+    }
+    
+    private async void _mqSubscriber_OnMessageReceived(string routingKey, string jsonData) {
+        JObject caseObj = JObject.Parse(jsonData);
+        long caseId = caseObj.Value<long>("Id");
+        string equipmentTag = caseObj.Value<string>("EquipmentTag");
+        
+        string timestampString = caseObj.Value<string>("Timestamp");
+        DateTime.TryParse(timestampString, out DateTime timestamp);
+        string? ticks = (timestamp != DateTime.MinValue) ? timestamp.Ticks.ToString() : null;
+        
+        // Process footage generation...
+    }
+}
+```
+
+**Explanation**:
+- FootageService runs as a background hosted service in MqProcSvc
+- Subscribes to `*.cms.case.created` topic pattern (matches all tenants)
+- Extracts case details from the message
+- Converts timestamp to ticks for precise time reference
+
+---
+
+#### Step 3: Identify Related Cameras
+
+**Description**: The service identifies which cameras should have footage captured based on the equipment tag from the case.
+
+**Corresponding Source Files**:
+- [`mqprocsvc/src/MqProcSvc/Footage/FootageService.cs`]
+
+**Code Snippet**:
+
+```csharp
+// From FootageService.cs
+if (!string.IsNullOrWhiteSpace(equipmentTag)) {
+    AssetViewModel asset = (await MozartUtil.GetAssetsAsync(tenantId))
+        .FirstOrDefault(x => string.Equals(x.EquipmentTag, equipmentTag, StringComparison.OrdinalIgnoreCase));
+    
+    if (asset != null) {
+        HashSet<int> cctvIds = new HashSet<int>();
+        
+        AssetCategoryViewModel assetCategory = (await MozartUtil.GetAssetCategoriesAsync(tenantId))
+            .FirstOrDefault(x => x.Id == asset.AssetCategoryId);
+        
+        // Add self if camera
+        if (assetCategory?.AssetCategoryCode == CoreLib.CONST.ASSETCATEGORYCODE.CCTV) {
+            cctvIds.Add(asset.Id);
+        }
+        
+        // Add all other closest cameras
+        if (asset.ClosestCameras?.Length > 0) {
+            foreach (AssetViewModel.ClosestCamera thisCamera in asset.ClosestCameras) {
+                cctvIds.Add(thisCamera.CameraId);
+            }
+        }
+        
+        Serilog.Log.Information($"Found a total of {cctvIds.Count}(s) CCTVs.");
+    }
+}
+```
+
+**Explanation**:
+- Looks up the asset by equipment tag
+- Checks if the asset itself is a CCTV (camera)
+- Retrieves all "closest cameras" configured for that asset/location
+- Collects all camera IDs into a set for processing
+- This enables multi-camera capture for comprehensive incident documentation
+
+---
+
+#### Step 4: Request Footage Generation for Each Camera
+
+**Description**: For each identified camera, the service makes an HTTP POST request to the Video API to generate footage and snapshot.
+
+**Corresponding Source Files**:
+- [`mqprocsvc/src/MqProcSvc/Footage/FootageService.cs`]
+
+**Code Snippet**:
+
+```csharp
+// From FootageService.cs
+if (cctvIds.Count > 0) {
+    List<Task<string>> allSnapshotFootageRequests = new List<Task<string>>();
+    
+    foreach (int cameraId in cctvIds) {
+        // POST to /assets/{cameraId}/footagesnapshot/{ticks}
+        MozartApiRequest snapshotFootageRequest = new MozartApiRequest(
+            tenantId, 
+            Url.Combine(disco.video_endpoint, "assets", cameraId.ToString(), "footagesnapshot", ticks)
+        );
+        
+        allSnapshotFootageRequests.Add(snapshotFootageRequest.PostAsync().ReceiveString());
+        
+        Serilog.Log.Information("Footage Snapshot Request Camera Id: " + cameraId.ToString());
+    }
+    
+    // Execute all requests in parallel
+    string[] results = await Task.WhenAll(allSnapshotFootageRequests);
+    results = results.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+    
+    snapshotFilenames.AddRange(results);
+    footageFilenames.AddRange(results);
+}
+```
+
+**Explanation**:
+- Creates parallel HTTP POST requests for all cameras
+- Endpoint: `/assets/{cameraId}/footagesnapshot/{ticks}`
+- The `ticks` parameter specifies the exact event time
+- Executes all requests concurrently for efficiency
+- Returns filenames of generated footage/snapshots
+
+---
+
+#### Step 5: Video API Routes Request to Recorder
+
+**Description**: The Video API receives the footage generation request, looks up camera configuration, and routes the request to the appropriate video recorder service.
+
+**Corresponding Source Files**:
+- [`video/src/VideoApi/Controllers/DataController.cs`]
+
+**Code Snippet**:
+
+```csharp
+// From VideoApi DataController.cs
+[HttpPost("assets/{assetId}/footagesnapshot/{timeticks?}")]
+public async Task<IActionResult> Asset_GenerateFootageSnapshot(int assetId, long? timeticks = null) {
+    var cameraConfig = Get_CameraConfig_By_AssetId(assetId);
+    if (cameraConfig == null)
+        return NotFound();
+    return await GenerateFootageSnapshot(cameraConfig.Id, timeticks);
+}
+
+[HttpPost("cameraconfigs/{cameraconfigid}/footagesnapshot/{timeticks?}")]
+public async Task<IActionResult> GenerateFootageSnapshot(int cameraconfigid, long? timeticks = null) {
+    var model = Get_CameraConfig(cameraconfigid);
+    
+    // Get snapshot controller configuration
+    var snapshotController = _dbContext.CacheGet<SnapshotController>()
+        .FirstOrDefault(x => x.Id == model.SnapshotControllerId.Value);
+    
+    // Determine camera reference ID based on VMS type
+    string cameraReferenceId = "";
+    switch (snapshotController.ControllerName) {
+        case SnapshotControllerName.Milestone:
+            exReference = model.ExternalReference?
+                .Where(x => x.Source != null && x.Source.Value == (int)ExternalSource.Milestone)
+                .FirstOrDefault();
+            if (exReference != null && !string.IsNullOrEmpty(exReference.Reference)) {
+                cameraReferenceId = exReference.Reference;
+            }
+            break;
+        case SnapshotControllerName.Dahua:
+            // Similar logic for Dahua
+            break;
+        // ... other VMS types
+    }
+    
+    timeticks ??= DateTime.Now.Ticks;
+    var fileName = $"{cameraconfigid}_{rNumber}_{timeticks}";
+    var footageFileName = $"footage_{cameraconfigid}_{rNumber}_{timeticks}";
+    var snapshotFileName = $"snapshot_{cameraconfigid}_{rNumber}_{timeticks}";
+    
+    // Save to database
+    var snapshotModel = new Snapshot() {
+        ControllerId = model.SnapshotControllerId.Value,
+        FileName = footageFileName,
+        CreatedOn = new DateTime(timeticks.Value)
+    };
+    _dbContext.Update(snapshotModel);
+    await _dbContext.SaveChangesAsync();
+    
+    // Forward to recorder service
+    var recorderUrl = Flurl.Url.Combine(
+        snapshotController.RecorderUrl, 
+        cameraReferenceId, 
+        snapshotController.ControllerName.ToString(), 
+        footageFileName, 
+        snapshotFileName, 
+        timeticks.Value.ToString(), 
+        "footagesnapshot"
+    );
+    await recorderUrl.PostAsync();
+    
+    return Ok(fileName);
+}
+```
+
+**Explanation**:
+- Converts asset ID to camera config ID
+- Retrieves camera configuration including VMS controller settings
+- Maps internal camera ID to external VMS camera reference
+- Generates unique filenames for footage and snapshot
+- Creates database records for tracking
+- Forwards request to the appropriate recorder service (MedianVideoApi, MilestoneMediaServices, etc.)
+
+---
+
+#### Step 6: MedianVideoApi Downloads and Processes Video
+
+**Description**: The recorder service (MedianVideoApi) receives the request, downloads video from the VMS for the specified time range, and processes it using FFmpeg.
+
+**Corresponding Source Files**:
+- [`video/src/MedianVideoApi/Controllers/DataController.cs`]
+- [`video/src/MedianVideoApi/appsettings.json`]
+
+**Code Snippet** (Configuration):
+
+```json
+// From appsettings.json
+{
+  "FootageStartFromSeconds": -5,
+  "FootageEndAtSeconds": 5,
+  "FootageOffsetSeconds": 0,
+  "StoragePath": "C:\\Users\\admin\\Desktop\\Footage",
+  "TempPath": "D:\\Temp\\video"
+}
+```
+
+**Code Snippet** (Processing):
+
+```csharp
+// From MedianVideoApi DataController.cs
+[HttpPost("{cameraReferenceId}/{controllerName}/{footageFileName}/{snapshotFileName}/{timetick}/footagesnapshot")]
+public async Task<IActionResult> GenerateFootageSnapshot(
+    string cameraReferenceId, 
+    string controllerName, 
+    string footageFileName, 
+    string snapshotFileName, 
+    long timetick
+) {
+    DateTime eventTime = new DateTime(timetick);
+    Serilog.Log.Information($"called GenerateFootageSnapshot at time : {eventTime}");
+    
+    // Wait 10 seconds so footage can contain a few seconds after the event
+    Thread.Sleep(10000);
+    
+    // Read configuration
+    int footageStartFromSecondsInt = -5;
+    int.TryParse(_configuration.GetSection("FootageStartFromSeconds").Value, out footageStartFromSecondsInt);
+    
+    int footageEndAtSecondsInt = 5;
+    int.TryParse(_configuration.GetSection("FootageEndAtSeconds").Value, out footageEndAtSecondsInt);
+    
+    // Calculate time range
+    DateTime fromDate = eventTime.AddSeconds(footageStartFromSecondsInt);
+    DateTime toDate = eventTime.AddSeconds(footageEndAtSecondsInt);
+    
+    // Prepare file paths
+    var storagePath = _configuration.GetSection("StoragePath").Value;
+    string dateForStoragePath = eventTime.ToString("yyyyMMdd");
+    string footageFilePath = storagePath + $"\\Footage\\{dateForStoragePath}";
+    string snapshotFilePath = storagePath + $"\\Snapshot\\{dateForStoragePath}";
+    
+    if (!Directory.Exists(footageFilePath))
+        Directory.CreateDirectory(footageFilePath);
+    if (!Directory.Exists(snapshotFilePath))
+        Directory.CreateDirectory(snapshotFilePath);
+    
+    string fullFootageFilePath = footageFilePath + $"\\{footageFileName}.mp4";
+    string fullSnapshotFilePath = snapshotFilePath + $"\\{snapshotFileName}.jpeg";
+    
+    // Download and process based on VMS type
+    switch (controllerName) {
+        case CONST.CONTROLLER.HIKCENTRAL:
+            await new HikHelper(connectionInfo, FFMPEGPath)
+                .Download_Video(cameraReferenceId, tempFilePath, fullFootageFilePath, fullSnapshotFilePath, fromDate, toDate);
+            break;
+            
+        case CONST.CONTROLLER.MILESTONE:
+            await new MilestoneHelper(_milestoneConfiguration)
+                .DownloadVideo(cameraReferenceId, fullFootageFilePath, fullSnapshotFilePath, fromDate, toDate);
+            break;
+            
+        // ... other VMS types
+    }
+    
+    return Ok();
+}
+```
+
+**Explanation**:
+- **10-second delay**: Ensures footage is available in the VMS (recording lag)
+- **Time range calculation**: Default -5 to +5 seconds from event time (10 seconds total)
+- **Directory structure**: Organized by date `YYYYMMDD` for efficient storage
+- **VMS-specific download**: Each VMS has a dedicated helper class
+- **Dual output**: Generates both MP4 video and JPEG snapshot
+- **FFmpeg processing**: Used to convert raw video streams to MP4 format and extract snapshot frames
+
+**Data Flow for HikCentral Example**:
+```
+HikCentral API → Download H.265 Video → FFmpeg Convert to MP4 → Save Footage
+                                      ↘ Extract Frame → Save Snapshot JPEG
+```
+
+---
+
+#### Step 7: Link Generated Media to Case
+
+**Description**: Once footage and snapshots are generated, the FootageService links them to the case by creating media records in the CMS database.
+
+**Corresponding Source Files**:
+- [`mqprocsvc/src/MqProcSvc/Footage/FootageService.cs`]
+
+**Code Snippet**:
+
+```csharp
+// From FootageService.cs
+// Link snapshots and footages to case
+List<Task<IFlurlResponse>> allSnapshotRequests = new List<Task<IFlurlResponse>>();
+
+MozartApiRequest cmsApi = new MozartApiRequest(
+    tenantId, 
+    Url.Combine(disco.cms_endpoint, "cases", caseId.ToString(), "media")
+);
+
+// Link snapshots
+foreach (string snapshotFilename in snapshotFilenames) {
+    allSnapshotRequests.Add(cmsApi.PostJsonAsync(new {
+        CaseId = caseId,
+        FileName = snapshotFilename,
+        PointerUrl = Url.Combine(disco_public.video_endpoint, "snapshot", snapshotFilename)
+            .SetQueryParam("blob")
+            .ToString(),
+    }));
+}
+
+// Link footage videos
+foreach (string footageFilename in footageFilenames) {
+    allSnapshotRequests.Add(cmsApi.PostJsonAsync(new {
+        CaseId = caseId,
+        FileName = footageFilename,
+        PointerUrl = Url.Combine(disco_public.video_endpoint, "footage", footageFilename)
+            .SetQueryParam("blob")
+            .ToString(),
+    }));
+}
+
+// Execute all requests in parallel
+await Task.WhenAll(allSnapshotRequests);
+```
+
+**Explanation**:
+- Creates media records in CMS database for each file
+- `PointerUrl` provides the public endpoint to retrieve the media
+- Snapshots use `/snapshot/` endpoint
+- Footage uses `/footage/` endpoint
+- `?blob` query parameter indicates binary file retrieval
+- All API calls executed in parallel for efficiency
+
+---
+
+#### Step 8: Display in Case Detail Page
+
+**Description**: When users open the case detail page, the frontend retrieves and displays all associated media including the automatically generated footage and snapshots.
+
+**Corresponding Source Files**:
+- [`core-frontend/MozartCoreFrontend/ClientApp/src/pages/cms/allcases/form.js`]
+
+**Code Snippet** (Retrieve Media):
+
+```javascript
+// From allcases/form.js
+const config = {
+    getMedia: async (id) => {
+        let disco = await Discovery.get();
+        let url = `${disco['mozart-cms-api_endpoint']}/cases/${id}/media?includeAssetImages=false`;
+        return mozartApi.get(url);
+    }
+};
+
+// Load case data on mount
+useEffect(() => {
+    if (id) {
+        Promise.all([
+            config.fetchModel(id),
+            // ... other data
+            config.getMedia(id),  // Retrieve all media
+        ]).then(results => {
+            setModel(results[0]);
+            // ...
+            setMedia(results[9]);  // Set media state
+        });
+    }
+}, [id]);
+```
+
+**Code Snippet** (Display Playbacks Section):
+
+```javascript
+// From allcases/form.js - Playbacks Section
+<Grid item xs={12} style={{ paddingTop: 20 }}>
+    <Typography variant="h5">Playbacks</Typography>
+</Grid>
+<Grid item xs={12}>
+    <Box className={classes.mediaRoot}>
+        {
+            media.filter(x => x.UploadSource == MediaSource.SYSTEM).map((med, idx) => {
+                // Filter for footage files only
+                if (!med.PointerUrl.includes('/footage/')) {
+                    return false;
+                }
+                
+                return <div key={med.Id} className={classes.mediaContainer}>
+                    <MiniMedia 
+                        key={med.Id} 
+                        model={med} 
+                        style={{ width: '100%', paddingTop: '56.25%' }} 
+                    />
+                </div>
+            })
+        }
+    </Box>
+</Grid>
+```
+
+**Code Snippet** (Display Snapshots Section):
+
+```javascript
+// From allcases/form.js - Snapshots Section
+<Grid item xs={12} style={{ paddingTop: 20 }}>
+    <Typography variant="h5">Snapshots</Typography>
+</Grid>
+<Grid item xs={12}>
+    <Box className={classes.mediaRoot}>
+        {
+            media.filter(x => x.UploadSource == MediaSource.SYSTEM).map((med, idx) => {
+                // Filter for snapshot files only
+                if (!med.PointerUrl.includes('/snapshot/')) {
+                    return false;
+                }
+                
+                return <div key={med.Id} className={classes.mediaContainer}>
+                    <MiniMedia 
+                        key={med.Id} 
+                        model={med} 
+                        style={{ width: '100%', paddingTop: '56.25%' }} 
+                    />
+                </div>
+            })
+        }
+    </Box>
+</Grid>
+
+<Grid item xs={12} style={{ paddingTop: 20 }}>
+    <Typography variant="h5">Nearest Camera View (Live)</Typography>
+    <Box className={classes.mediaRoot}>
+        {closestCameras.map((cam, idx) => (
+            <div key={cam} className={classes.mediaContainer}>
+                <Camera 
+                    model={cam} 
+                    style={{ width: '100%', paddingTop: '56.25%' }} 
+                    showName 
+                    showFullScreen 
+                />
+            </div>
+        ))}
+    </Box>
+</Grid>
+```
+
+**Explanation**:
+- **Three sections displayed**:
+  1. **Playbacks**: Shows all MP4 video files (URL contains `/footage/`)
+  2. **Snapshots**: Shows all JPEG images (URL contains `/snapshot/`)
+  3. **Nearest Camera View (Live)**: Shows live feeds from closest cameras
+- **Filtering**: `MediaSource.SYSTEM` indicates automatically generated media (vs user uploads)
+- **MiniMedia component**: Renders video player for MP4 files, image viewer for JPEG files
+- **Layout**: Grid layout with 380px containers for each media item
+- **Aspect ratio**: 16:9 aspect ratio maintained with `paddingTop: '56.25%'`
+
+---
+
+### Complete Flow Diagram
+
+```mermaid
+sequenceDiagram
+    participant CMS as CMS API
+    participant MQ as RabbitMQ
+    participant FS as FootageService<br/>(MqProcSvc)
+    participant VA as VideoApi
+    participant MVA as MedianVideoApi<br/>(Recorder)
+    participant VMS as Video Management<br/>System
+    participant Storage as File Storage
+    participant Frontend as Case Detail Page
+
+    Note over CMS: Case Created
+    CMS->>MQ: Publish "*.cms.case.created"<br/>{CaseId, Timestamp, EquipmentTag}
+    
+    MQ->>FS: Deliver message
+    
+    FS->>FS: Identify cameras<br/>(self + closest cameras)
+    
+    loop For each camera
+        FS->>VA: POST /assets/{cameraId}/footagesnapshot/{ticks}
+        VA->>VA: Get camera config<br/>Determine VMS type
+        VA->>VA: Save snapshot records to DB
+        VA->>MVA: POST /{cameraRef}/{controller}/{footageFile}/{snapshotFile}/{ticks}/footagesnapshot
+        
+        Note over MVA: Wait 10 seconds
+        
+        MVA->>VMS: Download video<br/>(eventTime -5s to +5s)
+        VMS-->>MVA: Return video stream
+        
+        MVA->>MVA: Process with FFmpeg<br/>Convert to MP4
+        MVA->>Storage: Save footage.mp4
+        MVA->>MVA: Extract frame with FFmpeg
+        MVA->>Storage: Save snapshot.jpeg
+        
+        MVA-->>VA: Success
+        VA-->>FS: Return filename
+    end
+    
+    loop For each file (footage & snapshot)
+        FS->>CMS: POST /cases/{caseId}/media<br/>{FileName, PointerUrl}
+        CMS->>CMS: Create media record
+        CMS-->>FS: Success
+    end
+    
+    Note over Frontend: User opens case detail
+    Frontend->>CMS: GET /cases/{caseId}/media
+    CMS-->>Frontend: Return media list
+    
+    Frontend->>Frontend: Render Playbacks section<br/>(footage files)
+    Frontend->>Frontend: Render Snapshots section<br/>(snapshot files)
+    
+    Frontend->>Storage: GET /footage/{filename}?blob
+    Storage-->>Frontend: Stream MP4 video
+    
+    Frontend->>Storage: GET /snapshot/{filename}?blob
+    Storage-->>Frontend: Return JPEG image
+```
+
+---
+
+### Configuration
+
+**Time Range Configuration** ([video/src/MedianVideoApi/appsettings.json]):
+
+```json
+{
+  "FootageStartFromSeconds": -5,
+  "FootageEndAtSeconds": 5,
+  "FootageOffsetSeconds": 0
+}
+```
+
+- **FootageStartFromSeconds**: Seconds before event time to start capture (default: -5)
+- **FootageEndAtSeconds**: Seconds after event time to end capture (default: 5)
+- **Total Duration**: `EndAt - StartFrom` = 10 seconds by default
+- **FootageOffsetSeconds**: Time adjustment if VMS clock differs from server clock
+
+**Storage Paths** ([video/src/MedianVideoApi/appsettings.json]):
+
+```json
+{
+  "StoragePath": "C:\\Users\\admin\\Desktop\\Footage",
+  "TempPath": "D:\\Temp\\video"
+}
+```
+
+**Directory Structure**:
+```
+StoragePath/
+├── Footage/
+│   └── 20260113/
+│       ├── footage_123_456_638420000000000.mp4
+│       └── footage_124_789_638420000000000.mp4
+└── Snapshot/
+    └── 20260113/
+        ├── snapshot_123_456_638420000000000.jpeg
+        └── snapshot_124_789_638420000000000.jpeg
+```
+
+**Filename Format**: `{type}_{cameraConfigId}_{randomNumber}_{ticks}.{ext}`
+- `type`: "footage" or "snapshot"
+- `cameraConfigId`: Database ID of camera configuration
+- `randomNumber`: Random number (1-1000) for uniqueness
+- `ticks`: .NET DateTime ticks (precise timestamp)
+- `ext`: "mp4" for footage, "jpeg" for snapshots
+
+---
+
+### Key Technical Details
+
+**Automatic Processing**:
+- Fully automatic - no user intervention required
+- Triggered by RabbitMQ message on case creation
+- Asynchronous processing - doesn't block case creation
+
+**Multi-Camera Support**:
+- Captures from equipment camera if it's a CCTV
+- Captures from all "closest cameras" configured for the equipment/location
+- All cameras processed in parallel for efficiency
+
+**VMS Integration**:
+- Supports multiple VMS: Milestone, Dahua, HikCentral, Hikvision, SenseTime, Qognify
+- Each VMS has dedicated helper class for video download
+- Abstracts VMS differences behind common interface
+
+**File Formats**:
+- **Footage**: MP4 (H.264 video codec)
+- **Snapshot**: JPEG image
+- FFmpeg used for video conversion and frame extraction
+
+**Error Handling**:
+- Missing cameras gracefully skipped
+- Failed downloads logged but don't stop other cameras
+- Database transactions ensure data consistency
+- Retry logic in VMS helpers for transient failures
+
+**Performance Optimization**:
+- Parallel requests for multiple cameras
+- Asynchronous I/O operations
+- Background service doesn't impact main API performance
+
+**Security**:
+- Tenant isolation enforced
+- File access controlled via PointerUrl with authentication
+- Separate public/internal discovery endpoints
+
+---
+
+## External Playback: Flow Diagrams
+
+### External Playback Sequence Diagram
 
 ```mermaid
 sequenceDiagram
@@ -1330,11 +2555,11 @@ sequenceDiagram
     Frontend->>User: Video stopped
 ```
 
-### System Architecture Flowchart
+### External Playback System Architecture Flowchart
 
 ```mermaid
 flowchart TD
-    A[User opens Video Page] --> B{Camera Type?}
+    A[User opens External Playback Page] --> B{Camera Type?}
     
     B -->|Milestone| C[Get Camera Config<br/>with Milestone Controller]
     B -->|Dahua| D[Get Camera Config<br/>with Dahua Controller]
@@ -1398,7 +2623,7 @@ flowchart LR
 
 ---
 
-## Key Technical Details
+## External Playback & Live View: Key Technical Details
 
 ### Video Format
 - **Milestone**: Direct JPEG frames from Milestone Mobile Service API
@@ -1511,10 +2736,55 @@ This design provides a robust, maintainable solution for security camera video i
 
 ---
 
+## Feature Comparison Summary
+
+### Quick Reference Table
+
+| Feature | Live View | Short Playback | External Playback |
+|---------|-----------|----------------|-------------------|
+| **Purpose** | Real-time monitoring | Automatic incident documentation | Detailed investigation |
+| **Trigger** | User opens live view | Automatic (case creation) | User opens playback page |
+| **Duration** | Continuous (until closed) | 10 seconds (configurable) | User-defined |
+| **Technology** | WebSocket streaming | Pre-recorded MP4/JPEG files | WebSocket streaming |
+| **Frame Rate** | ~15 FPS | N/A (file-based) | ~15 FPS |
+| **Storage** | Not stored | Permanent server storage | Not stored (streamed on-demand) |
+| **Format** | JPEG frames (base64) | MP4 video + JPEG snapshot | JPEG frames (base64) |
+| **Controls** | PTZ controls (if supported) | Play/Pause/Download | Timeline, Speed, Seek |
+| **Multi-camera** | Yes (simultaneous views) | Yes (automatic capture) | One at a time |
+| **Primary Use** | Active surveillance | Quick incident review | Forensic analysis |
+| **Access Location** | Live view page, dashboards | Case detail page | Dedicated playback page |
+| **VMS Query** | Real-time stream | Historical footage (event time ±5s) | Historical footage (user range) |
+
+### When to Use Each Feature
+
+**Use Live View when:**
+- Monitoring real-time security situations
+- Responding to active alarms or incidents
+- Performing proactive surveillance
+- Controlling PTZ cameras for better viewing angles
+
+**Use Short Playback when:**
+- Reviewing incidents documented in cases
+- Quick verification of alarm triggers
+- Obtaining evidence for immediate case triage
+- Accessing pre-captured footage without VMS access
+
+**Use External Playback when:**
+- Conducting detailed incident investigations
+- Reviewing extended time periods
+- Analyzing events leading up to or following an incident
+- Creating evidence packages requiring precise timing
+- Performing forensic video analysis
+
+---
+
 ## Document Metadata
 
 - **Created**: December 16, 2025
 - **Author**: GitHub Copilot (AI Assistant)
-- **Version**: 1.0
-- **Last Updated**: December 16, 2025
-
+- **Version**: 2.0
+- **Last Updated**: January 16, 2026
+- **Major Changes in v2.0**: 
+  - Reorganized into three distinct features: Live View, Short Playback, External Playback
+  - Added Short Playback comprehensive documentation
+  - Added feature comparison table and usage guidelines

@@ -1,19 +1,19 @@
 # Video Playback Enhancement Plan
 
-Date: 2026-01-20
+Date: 2026-01-27
 
 ## Overview
 This plan delivers a two-phase upgrade to the video playback experience:
 
 - **Phase 1 (Executable)**: Align **Short Playback** streaming to the **current External Playback** streaming behavior and session lifecycle (Option A).
-- **Phase 2 (Planned)**: Reduce streaming startup latency to **time-to-first-frame (TTFF) < 5 seconds** and improve overall streaming responsiveness.
+- **Phase 2 (Planned)**: Reduce streaming startup latency to **time-to-first-frame (TTFF) < 3 seconds** (server-side first decoded frame) and improve overall streaming responsiveness, with **Dahua** as the highest priority.
 
 The plan is scoped to the existing Video services and their documented behavior. No code changes are included in this document.
 
 ## Goals
 - **Phase 1**: Short Playback uses the same streaming mechanics as External Playback.
-- **Phase 2**: Streaming initiates with TTFF < 5 seconds for supported VMS backends.
-- **Optional**: Add observability to measure and track startup latency.
+- **Phase 2**: Streaming initiates with TTFF < 3 seconds for Dahua (live view and external playback).
+- **Observability**: Log-only TTFF measurement at debug level with session ID, camera ID, and stream type.
 
 ## Non-goals
 - Major UI redesigns or new player features.
@@ -22,7 +22,7 @@ The plan is scoped to the existing Video services and their documented behavior.
 ## Definitions
 - **Short Playback**: Automatic case footage currently delivered as pre-generated MP4/JPEG.
 - **External Playback**: User-initiated historical playback using WebSocket streaming.
-- **TTFF**: Time-to-first-frame from client request to first renderable frame on the UI.
+- **TTFF (Phase 2)**: Time-to-first-frame from request initiation to **first decoded frame on the server**. Client-side TTFF will be added after server-side validation.
 
 ## Current Behavior Summary (Reference)
 - Short Playback: Pre-generated MP4/JPEG files from recorded footage.
@@ -71,7 +71,7 @@ For the current behavior details, see [docs/video-feature-documentation.md](vide
 
 6. **Documentation**
    - Update Short Playback description in [docs/video-feature-documentation.md](video-feature-documentation.md) to reflect streaming alignment.
-   - Add references in [README.md](../README.md) to this plan.
+   - Add references in [src/video/README.md](../src/video/README.md) to this plan.
 
 ### Acceptance Criteria
 - Short Playback streaming uses the External Playback lifecycle and WebSocket frame delivery.
@@ -90,37 +90,42 @@ For the current behavior details, see [docs/video-feature-documentation.md](vide
 ---
 
 ## Phase 2 — Planned Improvements
-**Objective**: Reduce streaming startup latency to **TTFF < 5 seconds** and improve overall perceived responsiveness.
+**Objective**: Reduce streaming startup latency to **TTFF < 3 seconds** (server-side first decoded frame), prioritizing **Dahua** live view and external playback. Short playback is out of scope for Phase 2.
 
 ### Plan Items
-1. **Measure Baseline TTFF**
-   - Capture current TTFF for each VMS path.
-   - Use consistent measurement from request initiation to first UI frame.
+1. **Measure Baseline TTFF (Log-only, Server-side)**
+   - Capture current TTFF for **Dahua live view and external playback** only.
+   - Measure from request initiation to **first decoded frame** on the server.
+   - Log at **debug** level with **session ID, camera ID, and stream type**.
 
-2. **Streaming Pipeline Optimization**
-   - Identify startup bottlenecks (auth, session creation, RTSP retrieval, FFmpeg spin-up, frame extraction).
-   - Consider reusing hot sessions where safe and feasible.
+2. **Streaming Pipeline Optimization (Dahua-first)**
+   - Identify startup bottlenecks: auth, RTSP retrieval, FFmpeg spin-up, first frame decode.
+   - Prioritize improvements that reduce Dahua first-frame latency without changing stream stability.
 
-3. **Pre-initialization Opportunities**
-   - Pre-auth or prefetch camera session tokens for frequently accessed cameras.
-   - Cache configuration and endpoint discovery results where valid.
+3. **Low-res First Frame Strategy (Config-driven)**
+   - Introduce **low-resolution first frame** for all Dahua streams.
+   - The low-res settings apply to the **entire stream session** for efficiency (no mid-stream FFmpeg restart).
+   - After the first decoded frame is logged, normal playback continues with the reduced settings.
+   - Expose settings via configuration keys (width, fps, quality).
 
 4. **Transport and Frame Handling**
-   - Evaluate frame batching vs single-frame delivery at startup.
-   - Reduce first-frame latency by prioritizing immediate keyframe retrieval.
+   - Reduce startup latency by tuning FFmpeg startup parameters (probe/analysis duration, buffering) within safe bounds.
+   - Maintain stable frame delivery after the first decoded frame.
 
-5. **Observability (Nice-to-have)**
-   - Add TTFF metrics and structured logs per playback session.
-   - Optional tracing for request-to-first-frame spans.
+5. **Observability (Logs Only)**
+   - No metrics or tracing; **debug logs only** for TTFF and failure paths.
+   - Log failures when no frame is decoded (standard logger).
 
 ### Considerations
-- Maintain consistent behavior across VMS backends while allowing vendor-specific optimizations.
+- Phase 2 is Dahua-only for live view and external playback; other vendors remain unchanged.
+- Low-res-first settings are applied to the entire stream session for efficiency (prevents mid-stream FFmpeg restart).
 - Ensure improvements do not regress playback stability or frame quality.
-- Document vendor-specific limitations that prevent TTFF < 5 seconds.
+- Document vendor-specific limitations that prevent TTFF < 3 seconds.
 
 ### Phase 2 Success Criteria (Target)
-- TTFF < 5 seconds for supported vendors and supported network conditions.
-- Clear telemetry showing startup latency distribution and regressions.
+- **Dahua live view and external playback** reach TTFF < 3 seconds (server-side first decoded frame).
+- Debug logs include session ID, camera ID, and stream type for TTFF correlation.
+- Low-res first frame is applied for entire stream session (efficient; no mid-stream FFmpeg restart).
 
 ---
 
@@ -129,8 +134,9 @@ For the current behavior details, see [docs/video-feature-documentation.md](vide
   - **Mitigation**: Enforce time-window limits and introduce rate limiting.
 - **Risk**: VMS-specific startup variability.
   - **Mitigation**: Vendor-specific fallbacks and explicit SLA documentation.
+- **Risk**: Low-res first frame may cause brief visual downgrade.
+  - **Mitigation**: Keep defaults conservative and configurable; applied to entire session for efficiency.
 
 ## Documentation Updates Required
 - [docs/video-feature-documentation.md](video-feature-documentation.md)
-- [README.md](../README.md)
-- [CHANGELOG.md](../CHANGELOG.md)
+- [src/video/README.md](../src/video/README.md)
